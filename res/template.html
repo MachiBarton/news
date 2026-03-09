@@ -145,6 +145,25 @@
             font-size: 11px;
             margin-left: 10px;
             font-family: 'Inter', sans-serif;
+            position: relative;
+            cursor: help;
+        }
+        .verification-status[data-tooltip]:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 0;
+            top: calc(100% + 6px);
+            z-index: 120;
+            background: #121212;
+            color: #fff;
+            font-size: 11px;
+            line-height: 1.4;
+            padding: 6px 8px;
+            border-radius: 4px;
+            white-space: normal;
+            min-width: 180px;
+            max-width: 360px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
         .category-tag {
             display: inline-block;
@@ -357,7 +376,7 @@
         <!-- 头条10条 -->
         <div id="top10" class="tab-content active">
             <div class="section-header">
-                <h2 class="section-title">今日头条</h2>
+                <h2 class="section-title">每日热点</h2>
                 <div class="section-meta">全平台最重要的10条新闻 | 更新时间：{{UPDATE_TIME}}</div>
             </div>
 

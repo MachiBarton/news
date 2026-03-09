@@ -4,13 +4,12 @@ import os
 import re
 import html
 import time
-import random
 import urllib.request
 import urllib.parse
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from email.utils import parsedate_to_datetime
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple
 
 PROJECT_DIR = "/Users/marcus/projects/pageDalliy"
 TMP_DIR = os.path.join(PROJECT_DIR, "tmp")
@@ -28,19 +27,112 @@ RUN_TAG = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 PIPE_LOG = os.path.join(LOG_DIR, f"pipeline_{RUN_TAG}.log")
 RETRY_LOG = os.path.join(LOG_DIR, f"retry_{RUN_TAG}.json")
 
-CATEGORY_ORDER = ["国际", "时政", "军事", "科技", "商业", "健康", "科学", "中国", "体育"]
-CAT_TAB = {
-    "国际": "world",
-    "时政": "politics",
-    "军事": "military",
-    "科技": "tech",
-    "商业": "business",
-    "财经": "business",
-    "健康": "health",
-    "科学": "science",
-    "中国": "china",
-    "体育": "sports",
+CATEGORY_ORDER = ["国际", "时政", "军事", "科技", "财经", "商业", "健康", "科学", "中国", "体育", "文化", "娱乐"]
+TAB_CONFIG: List[Dict[str, str]] = [
+    {"id": "top10", "tab": "综合热点", "title": "每日热点", "subtitle": "全平台综合热度Top10"},
+    {"id": "world", "tab": "国际", "title": "国际新闻", "subtitle": "来自全球各地的重要新闻"},
+    {"id": "politics", "tab": "时政", "title": "时政", "subtitle": "政策与政治动态"},
+    {"id": "military", "tab": "军事", "title": "军事", "subtitle": "全球军事动态与国防新闻"},
+    {"id": "tech", "tab": "科技", "title": "科技", "subtitle": "科技创新与产业动态"},
+    {"id": "finance", "tab": "财经", "title": "财经", "subtitle": "金融市场、货币与宏观经济"},
+    {"id": "business", "tab": "商业", "title": "商业", "subtitle": "公司、产业与商业趋势"},
+    {"id": "health", "tab": "健康", "title": "健康", "subtitle": "公共卫生与医学动态"},
+    {"id": "science", "tab": "科学", "title": "科学", "subtitle": "科研前沿与科学进展"},
+    {"id": "china", "tab": "中国", "title": "中国", "subtitle": "中国相关新闻"},
+    {"id": "sports", "tab": "体育", "title": "体育", "subtitle": "体育赛事与产业动态"},
+    {"id": "culture", "tab": "文化", "title": "文化", "subtitle": "文化艺术与社会生活"},
+    {"id": "entertainment", "tab": "娱乐", "title": "娱乐", "subtitle": "影视文娱与名人动态"},
+]
+TAB_CATEGORY_MAP: Dict[str, List[str]] = {
+    "world": ["国际"],
+    "politics": ["时政"],
+    "military": ["军事"],
+    "tech": ["科技"],
+    "finance": ["财经"],
+    "business": ["商业"],
+    "health": ["健康"],
+    "science": ["科学"],
+    "china": ["中国"],
+    "sports": ["体育"],
+    "culture": ["文化"],
+    "entertainment": ["娱乐"],
 }
+HEAT_WEIGHT = {"recency": 0.35, "keyword": 0.25, "source": 0.20, "coverage": 0.12, "category": 0.08}
+SOURCE_WEIGHT = {
+    "路透社": 0.95,
+    "Reuters": 0.95,
+    "纽约时报": 0.94,
+    "BBC": 0.93,
+    "卫报": 0.90,
+    "华尔街日报": 0.92,
+    "金融时报": 0.91,
+    "CNN": 0.89,
+    "Al Jazeera": 0.88,
+    "半岛电视台": 0.88,
+    "新华社": 0.84,
+    "新华网": 0.84,
+    "The Verge": 0.86,
+    "TechCrunch": 0.86,
+    "Wired": 0.86,
+    "Ars": 0.87,
+    "Nature": 0.90,
+    "Science": 0.90,
+    "ESPN": 0.85,
+}
+CATEGORY_WEIGHT = {
+    "国际": 0.95,
+    "时政": 0.94,
+    "军事": 0.93,
+    "科技": 0.89,
+    "财经": 0.88,
+    "商业": 0.86,
+    "健康": 0.86,
+    "科学": 0.84,
+    "中国": 0.82,
+    "体育": 0.78,
+    "文化": 0.72,
+    "娱乐": 0.70,
+}
+HOT_KEYWORDS: Dict[str, float] = {
+    "war": 0.90,
+    "conflict": 0.70,
+    "attack": 0.80,
+    "election": 0.70,
+    "market": 0.65,
+    "inflation": 0.70,
+    "recession": 0.80,
+    "oil": 0.60,
+    "ai": 0.70,
+    "chip": 0.60,
+    "vaccine": 0.75,
+    "pandemic": 0.90,
+    "earthquake": 0.90,
+    "战争": 0.90,
+    "冲突": 0.70,
+    "袭击": 0.80,
+    "选举": 0.70,
+    "市场": 0.65,
+    "通胀": 0.70,
+    "经济衰退": 0.80,
+    "油价": 0.60,
+    "人工智能": 0.70,
+    "芯片": 0.60,
+    "疫苗": 0.75,
+    "疫情": 0.90,
+    "地震": 0.90,
+}
+KEYWORD_CATEGORY_HINTS: List[Tuple[str, str]] = [
+    ("军事", r"(军|导弹|防务|国防|nato|missile|army|defense)"),
+    ("体育", r"(体育|比赛|联赛|奥运|冠军|nba|fifa|football|soccer|tennis)"),
+    ("财经", r"(财经|汇率|股市|债券|货币|通胀|利率|央行|market|stock|bond|currency|inflation|gdp|fed)"),
+    ("娱乐", r"(娱乐|电影|明星|剧集|票房|music|movie|celebrity|tv show)"),
+    ("文化", r"(文化|艺术|展览|博物馆|文学|heritage|culture|art|museum)"),
+    ("健康", r"(健康|医疗|医院|疾病|病毒|vaccine|health|medical|covid|flu)"),
+    ("科学", r"(科学|研究|实验|论文|science|study|research|nature)"),
+    ("科技", r"(科技|技术|ai|openai|chip|software|hardware|apple|google|meta)"),
+    ("时政", r"(时政|政府|总统|议会|立法|外交|election|parliament|policy|minister)"),
+    ("中国", r"(中国|北京|上海|国务院|人大|中国队|china|beijing)"),
+]
 
 WEEKDAY_ZH = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
 
@@ -89,6 +181,54 @@ def parse_time(item: ET.Element) -> datetime:
     return datetime.now()
 
 
+def parse_published_at(value: str) -> datetime:
+    try:
+        return datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
+    except Exception:
+        return datetime.now()
+
+
+def source_weight(source: str) -> float:
+    for key, score in SOURCE_WEIGHT.items():
+        if key.lower() in source.lower():
+            return score
+    return 0.75
+
+
+def sort_sources_for_display(sources: List[str]) -> List[str]:
+    return sorted(sources, key=lambda s: source_weight(s), reverse=True)
+
+
+def normalize_topic_key(title: str) -> str:
+    # 去掉大部分符号后保留主要语义片段，作为同题覆盖度统计键
+    key = re.sub(r"[^0-9a-zA-Z\u4e00-\u9fff]+", "", title.lower())
+    return key[:32]
+
+
+def infer_category(raw_category: str, source: str, title: str, summary: str) -> str:
+    text = f"{source} {title} {summary}".lower()
+    for cat, pattern in KEYWORD_CATEGORY_HINTS:
+        if re.search(pattern, text):
+            return cat
+    if raw_category in CATEGORY_ORDER:
+        return raw_category
+    return "国际"
+
+
+def recency_score(published_at: str) -> float:
+    dt = parse_published_at(published_at)
+    hours = max((datetime.now() - dt).total_seconds() / 3600.0, 0.0)
+    if hours <= 6:
+        return 1.0
+    if hours <= 24:
+        return 0.86
+    if hours <= 48:
+        return 0.72
+    if hours <= 72:
+        return 0.58
+    return 0.35
+
+
 def fetch_url(url: str, timeout: int = 8) -> str:
     req = urllib.request.Request(
         url,
@@ -123,7 +263,7 @@ def collect_rss() -> Dict[str, Any]:
     all_items: List[Dict[str, Any]] = []
     retry_records = []
 
-    max_total_items = 90
+    max_total_items = 180
     for idx, feed in enumerate(feeds, start=1):
         title = feed.get("title", "")
         url = feed.get("url", "")
@@ -173,7 +313,7 @@ def collect_rss() -> Dict[str, Any]:
                 }
             )
             picked += 1
-            if picked >= 2:
+            if picked >= 4:
                 break
         if len(all_items) >= max_total_items:
             break
@@ -228,7 +368,7 @@ def translate_text_to_zh(text: str) -> str:
 
 def translate_news(raw_payload: Dict[str, Any]) -> Dict[str, Any]:
     out_items = []
-    max_translate_items = 40
+    max_translate_items = 150
     for it in raw_payload.get("items", [])[:max_translate_items]:
         title_zh = translate_text_to_zh(it.get("title", ""))
         summary_zh = translate_text_to_zh(it.get("summary", ""))
@@ -251,39 +391,85 @@ def translate_news(raw_payload: Dict[str, Any]) -> Dict[str, Any]:
     return payload
 
 
-def score_item(it: Dict[str, Any]) -> float:
-    base = 5.0
-    title = it.get("title_zh", "")
-    summary = it.get("summary_zh", "")
+def score_item(it: Dict[str, Any], topic_counts: Dict[str, int]) -> Tuple[float, Dict[str, float]]:
+    title = it.get("title_zh", it.get("title", ""))
+    summary = it.get("summary_zh", it.get("summary", ""))
     txt = f"{title} {summary}".lower()
+    category = it.get("category", "国际")
+    source = it.get("source", "")
 
-    hot_kw = ["war", "strike", "attack", "ai", "openai", "trump", "china", "market", "election", "virus", "conflict"]
-    hot_zh = ["战争", "袭击", "冲突", "人工智能", "选举", "中国", "市场", "芯片", "疫苗", "经济"]
-    for k in hot_kw:
-        if k in txt:
-            base += 0.35
-    for k in hot_zh:
-        if k in txt:
-            base += 0.45
-    base += random.uniform(0, 1.2)
-    return min(round(base, 1), 9.9)
+    keyword_raw = 0.0
+    for kw, score in HOT_KEYWORDS.items():
+        if kw in txt:
+            keyword_raw += score
+    keyword_norm = min(keyword_raw / 3.0, 1.0)
+
+    topic_key = normalize_topic_key(title)
+    topic_coverage = min(topic_counts.get(topic_key, 1), 4) / 4.0
+    source_norm = source_weight(source)
+    category_norm = CATEGORY_WEIGHT.get(category, 0.75)
+    recency_norm = recency_score(it.get("published_at", ""))
+
+    final_norm = (
+        HEAT_WEIGHT["recency"] * recency_norm
+        + HEAT_WEIGHT["keyword"] * keyword_norm
+        + HEAT_WEIGHT["source"] * source_norm
+        + HEAT_WEIGHT["coverage"] * topic_coverage
+        + HEAT_WEIGHT["category"] * category_norm
+    )
+    final_score = max(0.0, min(round(final_norm * 10, 1), 9.9))
+    detail = {
+        "recency": round(recency_norm, 3),
+        "keyword": round(keyword_norm, 3),
+        "source": round(source_norm, 3),
+        "coverage": round(topic_coverage, 3),
+        "category": round(category_norm, 3),
+    }
+    return final_score, detail
 
 
 def edit_news(trans_payload: Dict[str, Any]) -> Dict[str, Any]:
-    items = []
+    normalized_items = []
+    topic_counts: Dict[str, int] = {}
+    topic_sources: Dict[str, set] = {}
     for it in trans_payload.get("items", []):
-        score = score_item(it)
-        verif = "✅ 已验证" if score >= 7.0 else "⚠️ 部分验证"
+        title_zh = it.get("title_zh", it.get("title", ""))[:90]
+        summary_zh = it.get("summary_zh", it.get("summary", ""))[:180]
+        category = infer_category(it.get("category", "国际"), it.get("source", ""), title_zh, summary_zh)
+        topic_key = normalize_topic_key(title_zh)
+        topic_counts[topic_key] = topic_counts.get(topic_key, 0) + 1
+        topic_sources.setdefault(topic_key, set()).add(it.get("source", "未知信源"))
+        normalized_items.append(
+            {
+                **it,
+                "category": category,
+                "title_zh": title_zh,
+                "summary_zh": summary_zh,
+                "topic_key": topic_key,
+            }
+        )
+
+    items = []
+    for it in normalized_items:
+        score, detail = score_item(it, topic_counts)
+        topic_key = it.get("topic_key", "")
+        ver_sources = sort_sources_for_display(list(topic_sources.get(topic_key, set())))
+        if len(ver_sources) >= 2:
+            verif = "✅ 多源验证"
+        else:
+            verif = "⚠️ 单一信源"
         items.append(
             {
                 "heat_score": score,
                 "verification_status": verif,
                 "category": it.get("category", "国际"),
-                "title": it.get("title_zh", it.get("title", ""))[:90],
-                "summary": it.get("summary_zh", it.get("summary", ""))[:180],
+                "title": it.get("title_zh", it.get("title", "")),
+                "summary": it.get("summary_zh", it.get("summary", "")),
                 "url": it.get("url", ""),
                 "source": it.get("source", "未知信源"),
                 "published_at": it.get("published_at", ""),
+                "heat_detail": detail,
+                "verification_sources": ver_sources[:5],
             }
         )
 
@@ -306,6 +492,10 @@ def edit_news(trans_payload: Dict[str, Any]) -> Dict[str, Any]:
         "total_candidates": len(items),
         "headlines": headlines,
         "categories": by_cat,
+        "heat_weight_rule": {
+            "formula": "热度 = 10 * (时效*0.35 + 关键词*0.25 + 信源*0.20 + 同题覆盖*0.12 + 分类影响*0.08)",
+            "weights": HEAT_WEIGHT,
+        },
     }
     with open(EDIT_FILE, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
@@ -322,13 +512,16 @@ def article_html(story: Dict[str, Any], idx: int, show_category: bool = True) ->
     heat = story.get("heat_score", 0)
     ver = html.escape(story.get("verification_status", ""))
     tstr = html.escape(story.get("published_at", ""))
+    ver_sources = story.get("verification_sources", [])
+    tooltip_text = "验证信源：" + ("、".join(ver_sources) if ver_sources else "暂无")
+    tooltip_attr = html.escape(tooltip_text)
 
     category_block = f'<div class="category-tag">{cat}</div>' if show_category else ""
     return (
         '<article class="story-card">'
         f'<span class="rank-badge">#{idx}</span>'
         f'<span class="heat-score">{heat} 热度</span>'
-        f'<span class="verification-status">{ver}</span>'
+        f'<span class="verification-status" data-tooltip="{tooltip_attr}" title="{tooltip_attr}">{ver}</span>'
         f'{category_block}'
         f'<h3 class="story-title"><a href="{url}" target="_blank" rel="noopener noreferrer">{title}</a></h3>'
         f'<p class="story-summary">{summary}</p>'
@@ -339,6 +532,8 @@ def article_html(story: Dict[str, Any], idx: int, show_category: bool = True) ->
 
 def section_html(tab_id: str, title: str, subtitle: str, stories: List[Dict[str, Any]], active: bool = False) -> str:
     cards = "\n".join(article_html(s, i + 1, show_category=True) for i, s in enumerate(stories[:10]))
+    if not cards:
+        cards = '<article class="story-card"><h3 class="story-title">暂无可展示新闻</h3><p class="story-summary">当前分类暂无足够内容，请稍后刷新。</p></article>'
     active_cls = " active" if active else ""
     return (
         f'<div id="{tab_id}" class="tab-content{active_cls}">' 
@@ -357,17 +552,17 @@ def render_html(edited_payload: Dict[str, Any]) -> None:
     with open(os.path.join(RES_DIR, "template.html"), "r", encoding="utf-8") as f:
         tpl = f.read()
 
-    # 提取样式到 </head> 以及脚本尾部，复用模板视觉/交互
+    # 复用模板样式和抽屉/脚本，同时由代码动态生成头部、导航和各分类区块
     head_end = tpl.find("</head>")
-    body_start = tpl.find("<body>")
     footer_start = tpl.find('<footer class="footer">')
     script_start = tpl.find("<script>")
-    if min(head_end, body_start, footer_start, script_start) < 0:
+    script_end = tpl.find("</script>", script_start)
+    if min(head_end, footer_start, script_start, script_end) < 0:
         raise RuntimeError("template.html 结构不符合预期")
 
     head_part = tpl[:head_end + len("</head>")]
     footer_part = tpl[footer_start:script_start]
-    script_part = tpl[script_start:]
+    script_part = tpl[script_start:script_end + len("</script>")]
 
     now = datetime.now()
     date_s = now.strftime("%Y年%m月%d日")
@@ -376,27 +571,49 @@ def render_html(edited_payload: Dict[str, Any]) -> None:
 
     headlines = edited_payload.get("headlines", [])
     categories = edited_payload.get("categories", {})
+    weight_hint = "热度权重：时效35% + 关键词25% + 信源20% + 同题覆盖12% + 分类影响8%"
 
-    sections = []
-    sections.append(section_html("top10", "今日头条", f"全平台最重要的10条新闻 | 更新时间：{update_s}", headlines, active=True))
+    header_html = (
+        '<header class="masthead">'
+        '<h1 class="masthead-title"><a href="#">每日新闻</a></h1>'
+        '<div class="masthead-date">{{GENERATE_DATE}} {{WEEKDAY}}'
+        '<span class="lunar-full">'
+        '<span class="lunar-ganzhi">{{GANZHI_YEAR}}</span>'
+        '<span class="lunar-date">农历{{LUNAR_DATE}}</span>'
+        '<span class="lunar-shengxiao">{{SHENGXIAO}}年</span>'
+        "</span></div></header>"
+    )
+    nav_items = []
+    for i, tab in enumerate(TAB_CONFIG):
+        active_cls = " active" if i == 0 else ""
+        nav_items.append(
+            f'<li><a href="#" class="tab-link{active_cls}" data-tab="{tab["id"]}">{html.escape(tab["tab"])}</a></li>'
+        )
+    nav_html = '<nav class="tab-nav"><ul class="tab-list">' + "".join(nav_items) + "</ul></nav>"
 
-    mapping = [
-        ("world", "国际新闻", "来自全球各地的重要新闻", categories.get("国际", [])),
-        ("politics", "时政", "政策与政治动态", categories.get("时政", [])),
-        ("military", "军事", "全球军事动态与国防新闻", categories.get("军事", [])),
-        ("tech", "科技", "全球科技创新与产业动态", categories.get("科技", [])),
-        ("business", "商业", "商业、财经与市场变化", categories.get("商业", []) + categories.get("财经", [])),
-        ("health", "健康", "公共卫生与医学动态", categories.get("健康", [])),
-        ("science", "科学", "科研前沿与科学进展", categories.get("科学", [])),
-        ("china", "中国", "中国相关新闻", categories.get("中国", [])),
-        ("sports", "体育", "体育赛事与产业动态", categories.get("体育", [])),
+    sections = [
+        section_html(
+            "top10",
+            "每日热点",
+            f"全平台最重要的10条新闻 | 更新时间：{update_s} | {weight_hint}",
+            headlines,
+            active=True,
+        )
     ]
-    for tid, title, subtitle, stories in mapping:
-        sections.append(section_html(tid, title, subtitle, stories))
+
+    for tab in TAB_CONFIG:
+        tab_id = tab["id"]
+        if tab_id == "top10":
+            continue
+        tab_categories = TAB_CATEGORY_MAP.get(tab_id, [])
+        stories: List[Dict[str, Any]] = []
+        for c in tab_categories:
+            stories.extend(categories.get(c, []))
+        stories.sort(key=lambda x: (x.get("heat_score", 0), x.get("published_at", "")), reverse=True)
+        sections.append(section_html(tab_id, tab["title"], tab["subtitle"], stories[:10]))
 
     container = '<div class="container">' + "\n".join(sections) + "\n" + footer_part + "</div>"
-
-    out = head_part + "\n<body>\n" + container + "\n" + script_part
+    out = head_part + "\n<body>\n" + header_html + "\n" + nav_html + "\n" + container + "\n" + script_part + "\n</body>\n</html>\n"
     out = out.replace("{{GENERATE_DATE}}", date_s)
     out = out.replace("{{WEEKDAY}}", weekday_s)
     out = out.replace("{{GANZHI_YEAR}}", "乙巳")
@@ -414,7 +631,7 @@ def render_html(edited_payload: Dict[str, Any]) -> None:
 def validate_html() -> None:
     with open(OUT_HTML, "r", encoding="utf-8") as f:
         content = f.read()
-    needed = ["今日头条", 'id="top10"', 'id="world"', 'id="tech"', "tab-link"]
+    needed = ['id="top10"', 'id="world"', 'id="finance"', 'id="culture"', 'id="entertainment"', "tab-link", "每日热点"]
     missed = [k for k in needed if k not in content]
     if missed:
         raise RuntimeError(f"html validation failed, missing={missed}")
