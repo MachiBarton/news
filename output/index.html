@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>每日新闻 - 全球资讯聚合</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Serif SC', Georgia, 'Times New Roman', serif;
+            background-color: #fff;
+            color: #121212;
+            line-height: 1.6;
+        }
+        .masthead {
+            text-align: center;
+            padding: 20px 0 15px;
+            border-bottom: 1px solid #e2e2e2;
+        }
+        .masthead-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 52px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .masthead-title a {
+            color: #121212;
+            text-decoration: none;
+        }
+        .masthead-date {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .lunar-full {
+            display: inline-block;
+            margin-left: 12px;
+        }
+        .lunar-ganzhi {
+            color: #8B4513;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        .lunar-date {
+            color: #a81817;
+            font-weight: 500;
+        }
+        .lunar-shengxiao {
+            color: #d4a574;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .tab-nav {
+            border-bottom: 2px solid #121212;
+            border-top: 1px solid #e2e2e2;
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .tab-list {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
+        }
+        .tab-list li { margin: 0; }
+        .tab-list a {
+            display: block;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            padding: 15px 20px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab-list a:hover { color: #121212; }
+        .tab-list a.active {
+            color: #121212;
+            border-bottom-color: #121212;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .section-header {
+            border-bottom: 1px solid #121212;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+        }
+        .section-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .section-meta {
+            font-size: 13px;
+            color: #666;
+            font-family: 'Inter', sans-serif;
+        }
+        .news-grid-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+        .story-card {
+            border-bottom: 1px solid #e2e2e2;
+            padding-bottom: 20px;
+        }
+        .rank-badge {
+            display: inline-block;
+            background: #121212;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            font-family: 'Inter', sans-serif;
+        }
+        .heat-score {
+            display: inline-block;
+            color: #a81817;
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 10px;
+            font-family: 'Inter', sans-serif;
+        }
+        .verification-status {
+            display: inline-block;
+            font-size: 11px;
+            margin-left: 10px;
+            font-family: 'Inter', sans-serif;
+        }
+        .category-tag {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #a81817;
+            margin-bottom: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+        .story-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+        .story-title a {
+            color: #121212;
+            text-decoration: none;
+        }
+        .story-title a:hover { color: #666; }
+        .story-summary {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .story-meta {
+            font-size: 11px;
+            color: #666;
+            font-family: 'Inter', sans-serif;
+        }
+        .source-tag {
+            display: inline-block;
+            font-size: 11px;
+            color: #326891;
+            margin-right: 10px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .source-tag:hover {
+            text-decoration: underline;
+            color: #1a4a6e;
+        }
+        .sources-link {
+            color: #326891;
+            text-decoration: underline;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .sources-link:hover {
+            color: #1a4a6e;
+        }
+        /* 右侧抽屉样式 */
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .drawer-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background: #fff;
+            z-index: 999;
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .drawer.active {
+            right: 0;
+        }
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #e2e2e2;
+            background: #f8f9fa;
+        }
+        .drawer-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+        }
+        .drawer-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #666;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .drawer-close:hover {
+            background: #e2e2e2;
+            color: #121212;
+        }
+        .drawer-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .source-category {
+            margin-bottom: 24px;
+        }
+        .source-cat-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #121212;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #121212;
+        }
+        .source-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .source-list li {
+            font-size: 13px;
+            color: #333;
+            padding: 6px 0;
+            border-bottom: 1px dotted #e2e2e2;
+            font-family: 'Inter', sans-serif;
+        }
+        .source-list li:last-child {
+            border-bottom: none;
+        }
+        @media (max-width: 500px) {
+            .drawer {
+                width: 100%;
+                right: -100%;
+            }
+        }
+        .footer {
+            margin-top: 60px;
+            padding: 30px 0;
+            border-top: 1px solid #121212;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            font-family: 'Inter', sans-serif;
+        }
+        @media (max-width: 900px) {
+            .news-grid-list { grid-template-columns: repeat(2, 1fr); }
+            .tab-list { flex-wrap: wrap; }
+            .tab-list a { padding: 10px 15px; font-size: 12px; }
+        }
+        @media (max-width: 600px) {
+            .news-grid-list { grid-template-columns: 1fr; }
+            .masthead-title { font-size: 36px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container"><div id="top10" class="tab-content active"><div class="section-header"><h2 class="section-title">今日头条</h2><div class="section-meta">全平台最重要的10条新闻 | 更新时间：2026-03-09 18:45</div></div><div class="news-grid-list"><article class="story-card"><span class="rank-badge">#1</span><span class="heat-score">7.1 热度</span><span class="verification-status">✅ 已验证</span><div class="category-tag">国际</div><h3 class="story-title"><a href="https://www.nytimes.com/live/2026/03/09/world/iran-war-trump-israel-lebanon" target="_blank" rel="noopener noreferrer">实时更新：战争扰乱市场，伊朗选择的领导人标志着反抗</a></h3><p class="story-summary">尽管特朗普总统警告说他“不可接受”，但高级神职人员仍选择莫杰塔巴·哈梅内伊接替他被杀的父亲。油价飙升至大流行以来的最高水平，反映出人们对旷日持久的战争日益感到担忧。</p><div class="story-meta"><a href="https://www.nytimes.com/live/2026/03/09/world/iran-war-trump-israel-lebanon" class="source-tag" target="_blank" rel="noopener noreferrer">纽约时报 - 国际</a> | 2026-03-09 10:29:48</div></article>
+<article class="story-card"><span class="rank-badge">#2</span><span class="heat-score">6.5 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">国际</div><h3 class="story-title"><a href="#" target="_blank" rel="noopener noreferrer">中国奶奶将获得英超俱乐部VIP待遇</a></h3><p class="story-summary">一位来自中国的 79 岁老奶奶在英国旅游局举办的寻找中国最大的英超球迷并带他们踏上梦想的英国足球之旅的比赛中获胜。</p><div class="story-meta"><a href="#" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 文化</a> | 2026-03-09 18:44:39</div></article>
+<article class="story-card"><span class="rank-badge">#3</span><span class="heat-score">6.5 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">商业</div><h3 class="story-title"><a href="#" target="_blank" rel="noopener noreferrer">周五人民币兑美元汇率下跌至6.8949</a></h3><p class="story-summary">据中国外汇交易中心数据，周五人民币兑美元汇率中间价下跌19个基点至6.8949。</p><div class="story-meta"><a href="#" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 财经</a> | 2026-03-09 18:44:37</div></article>
+<article class="story-card"><span class="rank-badge">#4</span><span class="heat-score">6.5 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">国际</div><h3 class="story-title"><a href="http://www.xinhuanet.com/english/world/2018-01/24/c_136919909.htm" target="_blank" rel="noopener noreferrer">巴勒斯坦人抗议彭斯访问后与以色列士兵发生冲突</a></h3><p class="story-summary">2018 年 1 月 23 日，巴勒斯坦抗议者在抗议美国副总统迈克·彭斯访问约旦河西岸城市希伯伦耶路撒冷后，在冲突中向以色列士兵投掷石块。</p><div class="story-meta"><a href="http://www.xinhuanet.com/english/world/2018-01/24/c_136919909.htm" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 国际</a> | 2026-03-09 18:44:35</div></article>
+<article class="story-card"><span class="rank-badge">#5</span><span class="heat-score">6.5 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">时政</div><h3 class="story-title"><a href="http://www.xinhuanet.com/english/2017-04/24/c_136232199.htm" target="_blank" rel="noopener noreferrer">习近平同特朗普通电话讨论双边关系和朝鲜半岛局势</a></h3><p class="story-summary">周一，中国国家主席习近平与美国总统特朗普通电话，讨论双边关系和朝鲜半岛局势，双方通过多种方式保持密切联系，就共同关心的重大问题及时交换意见。</p><div class="story-meta"><a href="http://www.xinhuanet.com/english/2017-04/24/c_136232199.htm" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 中国</a> | 2026-03-09 18:44:35</div></article>
+<article class="story-card"><span class="rank-badge">#6</span><span class="heat-score">6.3 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">健康</div><h3 class="story-title"><a href="#" target="_blank" rel="noopener noreferrer">中国聚焦：针对艾滋病学生的单独考试地点引发争议</a></h3><p class="story-summary">一所专门为艾滋病毒学生开设的学校因安排 16 名学生与非艾滋病毒学生在不同的教室参加高考而引起争议。</p><div class="story-meta"><a href="#" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 健康</a> | 2026-03-09 18:44:39</div></article>
+<article class="story-card"><span class="rank-badge">#7</span><span class="heat-score">6.2 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">国际</div><h3 class="story-title"><a href="http://www.xinhuanet.com/english/2018-01/03/c_136868968.htm" target="_blank" rel="noopener noreferrer">美国未能任命澳大利亚大使是“外交侮辱”：前副总理</a></h3><p class="story-summary">澳大利亚前副总理蒂姆·费舍尔指责美国对澳大利亚进行“外交侮辱”。</p><div class="story-meta"><a href="http://www.xinhuanet.com/english/2018-01/03/c_136868968.htm" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 国际</a> | 2026-03-09 18:44:35</div></article>
+<article class="story-card"><span class="rank-badge">#8</span><span class="heat-score">6.2 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">军事</div><h3 class="story-title"><a href="https://www.military.com/daily-news/2026/03/09/investigation-further-suggests-it-was-us-struck-iranian-school-killing-165.html" target="_blank" rel="noopener noreferrer">调查进一步表明是美国袭击了伊朗一所学校，造成165人死亡</a></h3><p class="story-summary"></p><div class="story-meta"><a href="https://www.military.com/daily-news/2026/03/09/investigation-further-suggests-it-was-us-struck-iranian-school-killing-165.html" class="source-tag" target="_blank" rel="noopener noreferrer">Military.com</a> | 2026-03-09 10:04:58</div></article>
+<article class="story-card"><span class="rank-badge">#9</span><span class="heat-score">6.2 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">商业</div><h3 class="story-title"><a href="https://www.bbc.com/news/articles/cm2xp25m9mjo?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener noreferrer">随着石油成本上涨，亚洲各国政府限制燃油价格</a></h3><p class="story-summary">由于担心供应中断导致原油短缺，原油价格已飙升至 100 美元以上。</p><div class="story-meta"><a href="https://www.bbc.com/news/articles/cm2xp25m9mjo?at_medium=RSS&amp;at_campaign=rss" class="source-tag" target="_blank" rel="noopener noreferrer">BBC News - 商业</a> | 2026-03-09 09:44:09</div></article>
+<article class="story-card"><span class="rank-badge">#10</span><span class="heat-score">6.2 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">国际</div><h3 class="story-title"><a href="https://www.nytimes.com/2026/03/09/world/europe/iranians-destruction-bombs-despair.html" target="_blank" rel="noopener noreferrer">被困在炸弹和目中无人的统治者之间的伊朗人的恐惧和希望</a></h3><p class="story-summary">面对根深蒂固的制度，许多伊朗人感到无助，而一些人则因美国和以色列的猛烈轰炸而变得越来越愤怒。</p><div class="story-meta"><a href="https://www.nytimes.com/2026/03/09/world/europe/iranians-destruction-bombs-despair.html" class="source-tag" target="_blank" rel="noopener noreferrer">纽约时报 - 国际</a> | 2026-03-09 09:36:39</div></article></div></div>
+<div id="world" class="tab-content"><div class="section-header"><h2 class="section-title">国际新闻</h2><div class="section-meta">来自全球各地的重要新闻</div></div><div class="news-grid-list"><article class="story-card"><span class="rank-badge">#1</span><span class="heat-score">7.1 热度</span><span class="verification-status">✅ 已验证</span><div class="category-tag">国际</div><h3 class="story-title"><a href="https://www.nytimes.com/live/2026/03/09/world/iran-war-trump-israel-lebanon" target="_blank" rel="noopener noreferrer">实时更新：战争扰乱市场，伊朗选择的领导人标志着反抗</a></h3><p class="story-summary">尽管特朗普总统警告说他“不可接受”，但高级神职人员仍选择莫杰塔巴·哈梅内伊接替他被杀的父亲。油价飙升至大流行以来的最高水平，反映出人们对旷日持久的战争日益感到担忧。</p><div class="story-meta"><a href="https://www.nytimes.com/live/2026/03/09/world/iran-war-trump-israel-lebanon" class="source-tag" target="_blank" rel="noopener noreferrer">纽约时报 - 国际</a> | 2026-03-09 10:29:48</div></article>
+<article class="story-card"><span class="rank-badge">#2</span><span class="heat-score">6.5 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">国际</div><h3 class="story-title"><a href="#" target="_blank" rel="noopener noreferrer">中国奶奶将获得英超俱乐部VIP待遇</a></h3><p class="story-summary">一位来自中国的 79 岁老奶奶在英国旅游局举办的寻找中国最大的英超球迷并带他们踏上梦想的英国足球之旅的比赛中获胜。</p><div class="story-meta"><a href="#" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 文化</a> | 2026-03-09 18:44:39</div></article>
+<article class="story-card"><span class="rank-badge">#3</span><span class="heat-score">6.5 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">国际</div><h3 class="story-title"><a href="http://www.xinhuanet.com/english/world/2018-01/24/c_136919909.htm" target="_blank" rel="noopener noreferrer">巴勒斯坦人抗议彭斯访问后与以色列士兵发生冲突</a></h3><p class="story-summary">2018 年 1 月 23 日，巴勒斯坦抗议者在抗议美国副总统迈克·彭斯访问约旦河西岸城市希伯伦耶路撒冷后，在冲突中向以色列士兵投掷石块。</p><div class="story-meta"><a href="http://www.xinhuanet.com/english/world/2018-01/24/c_136919909.htm" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 国际</a> | 2026-03-09 18:44:35</div></article>
+<article class="story-card"><span class="rank-badge">#4</span><span class="heat-score">6.2 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">国际</div><h3 class="story-title"><a href="http://www.xinhuanet.com/english/2018-01/03/c_136868968.htm" target="_blank" rel="noopener noreferrer">美国未能任命澳大利亚大使是“外交侮辱”：前副总理</a></h3><p class="story-summary">澳大利亚前副总理蒂姆·费舍尔指责美国对澳大利亚进行“外交侮辱”。</p><div class="story-meta"><a href="http://www.xinhuanet.com/english/2018-01/03/c_136868968.htm" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 国际</a> | 2026-03-09 18:44:35</div></article>
+<article class="story-card"><span class="rank-badge">#5</span><span class="heat-score">6.2 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">国际</div><h3 class="story-title"><a href="https://www.nytimes.com/2026/03/09/world/europe/iranians-destruction-bombs-despair.html" target="_blank" rel="noopener noreferrer">被困在炸弹和目中无人的统治者之间的伊朗人的恐惧和希望</a></h3><p class="story-summary">面对根深蒂固的制度，许多伊朗人感到无助，而一些人则因美国和以色列的猛烈轰炸而变得越来越愤怒。</p><div class="story-meta"><a href="https://www.nytimes.com/2026/03/09/world/europe/iranians-destruction-bombs-despair.html" class="source-tag" target="_blank" rel="noopener noreferrer">纽约时报 - 国际</a> | 2026-03-09 09:36:39</div></article>
+<article class="story-card"><span class="rank-badge">#6</span><span class="heat-score">6.1 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">国际</div><h3 class="story-title"><a href="http://news.xinhuanet.com/english/2017-04/02/c_136177731.htm" target="_blank" rel="noopener noreferrer">梅赛德斯·奔驰时装周在匈牙利布达佩斯举行</a></h3><p class="story-summary"></p><div class="story-meta"><a href="http://news.xinhuanet.com/english/2017-04/02/c_136177731.htm" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 娱乐</a> | 2026-03-09 18:44:39</div></article>
+<article class="story-card"><span class="rank-badge">#7</span><span class="heat-score">6.0 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">国际</div><h3 class="story-title"><a href="#" target="_blank" rel="noopener noreferrer">奥赛博物馆69件杰作台北展出</a></h3><p class="story-summary">巴黎奥赛博物馆藏品69件精品将于周六在台北故宫博物院展出。</p><div class="story-meta"><a href="#" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 文化</a> | 2026-03-09 18:44:39</div></article>
+<article class="story-card"><span class="rank-badge">#8</span><span class="heat-score">5.9 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">国际</div><h3 class="story-title"><a href="https://www.aljazeera.com/news/2026/3/9/which-us-and-israeli-military-companies-are-profiting-from-the-iran-war?traffic_source=rss" target="_blank" rel="noopener noreferrer">哪些美国和以色列军事公司从伊朗战争中获利？</a></h3><p class="story-summary">在生产数十亿美元武器系统的需求推动下，国防股创下历史新高。</p><div class="story-meta"><a href="https://www.aljazeera.com/news/2026/3/9/which-us-and-israeli-military-companies-are-profiting-from-the-iran-war?traffic_source=rss" class="source-tag" target="_blank" rel="noopener noreferrer">半岛电视台</a> | 2026-03-09 09:56:01</div></article>
+<article class="story-card"><span class="rank-badge">#9</span><span class="heat-score">5.8 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">国际</div><h3 class="story-title"><a href="https://www.aljazeera.com/sports/2026/3/9/iraq-coach-urges-fifa-to-delay-world-cup-playoff-amid-us-israel-war-on-iran?traffic_source=rss" target="_blank" rel="noopener noreferrer">伊拉克教练敦促国际足联在美以对伊朗战争中推迟世界杯附加赛</a></h3><p class="story-summary">格雷厄姆·阿诺德表示，推迟 3 月 31 日的比赛将使分散的球队成员能够聚集起来做好准备。</p><div class="story-meta"><a href="https://www.aljazeera.com/sports/2026/3/9/iraq-coach-urges-fifa-to-delay-world-cup-playoff-amid-us-israel-war-on-iran?traffic_source=rss" class="source-tag" target="_blank" rel="noopener noreferrer">半岛电视台</a> | 2026-03-09 10:05:40</div></article>
+<article class="story-card"><span class="rank-badge">#10</span><span class="heat-score">5.5 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">国际</div><h3 class="story-title"><a href="http://news.xinhuanet.com/english/2017-04/24/c_136230463.htm" target="_blank" rel="noopener noreferrer">北京国际电影节天坛奖颁奖典礼在京举行</a></h3><p class="story-summary"></p><div class="story-meta"><a href="http://news.xinhuanet.com/english/2017-04/24/c_136230463.htm" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 娱乐</a> | 2026-03-09 18:44:39</div></article></div></div>
+<div id="politics" class="tab-content"><div class="section-header"><h2 class="section-title">时政</h2><div class="section-meta">政策与政治动态</div></div><div class="news-grid-list"><article class="story-card"><span class="rank-badge">#1</span><span class="heat-score">6.5 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">时政</div><h3 class="story-title"><a href="http://www.xinhuanet.com/english/2017-04/24/c_136232199.htm" target="_blank" rel="noopener noreferrer">习近平同特朗普通电话讨论双边关系和朝鲜半岛局势</a></h3><p class="story-summary">周一，中国国家主席习近平与美国总统特朗普通电话，讨论双边关系和朝鲜半岛局势，双方通过多种方式保持密切联系，就共同关心的重大问题及时交换意见。</p><div class="story-meta"><a href="http://www.xinhuanet.com/english/2017-04/24/c_136232199.htm" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 中国</a> | 2026-03-09 18:44:35</div></article>
+<article class="story-card"><span class="rank-badge">#2</span><span class="heat-score">5.9 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">时政</div><h3 class="story-title"><a href="https://www.theguardian.com/politics/live/2026/mar/09/keir-starmer-uk-gas-oil-prices-100-petrol-energy-inflation-latest-news-live-updates" target="_blank" rel="noopener noreferrer">随着油价飙升至每桶 100 美元以上，斯塔默试图安抚公众生活成本 - 英国政治直播</a></h3><p class="story-summary">由于石油和天然气价格有可能推高通胀，英国首相正面临来自工会和一些后座议员的压力，要求他们准备一揽子支持计划。斯塔默声称，英国经济的状况比2022年俄罗斯全面入侵乌克兰引发能源价格冲击时要好。他说：我认为提醒很重要</p><div class="story-meta"><a href="https://www.theguardian.com/politics/live/2026/mar/09/keir-starmer-uk-gas-oil-prices-100-petrol-energy-inflation-latest-news-live-updates" class="source-tag" target="_blank" rel="noopener noreferrer">卫报 - 时政</a> | 2026-03-09 10:32:24</div></article>
+<article class="story-card"><span class="rank-badge">#3</span><span class="heat-score">5.8 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">时政</div><h3 class="story-title"><a href="http://www.xinhuanet.com/english/2017-05/07/c_136263471.htm" target="_blank" rel="noopener noreferrer">中国聚焦：北京企业将技术带到“一带一路”国家</a></h3><p class="story-summary">“借船出海，我们会找到更多方式利用‘一带一路’带来的机遇。”他说。</p><div class="story-meta"><a href="http://www.xinhuanet.com/english/2017-05/07/c_136263471.htm" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 中国</a> | 2026-03-09 18:44:35</div></article>
+<article class="story-card"><span class="rank-badge">#4</span><span class="heat-score">5.7 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">时政</div><h3 class="story-title"><a href="https://www.bbc.com/news/articles/cz6evlwl68do?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener noreferrer">敦促自由民主党取消国王就伊朗问题进行的美国访问</a></h3><p class="story-summary">该党表示，在唐纳德·特朗普批评英国对战争的反应后，计划中的访问应该取消。</p><div class="story-meta"><a href="https://www.bbc.com/news/articles/cz6evlwl68do?at_medium=RSS&amp;at_campaign=rss" class="source-tag" target="_blank" rel="noopener noreferrer">BBC News - 时政</a> | 2026-03-09 10:39:50</div></article>
+<article class="story-card"><span class="rank-badge">#5</span><span class="heat-score">5.7 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">时政</div><h3 class="story-title"><a href="https://thehill.com/homenews/education/5771577-college-protests-columbia-stanford-trump-immigration/" target="_blank" rel="noopener noreferrer">一系列法律胜利给大学抗议者带来了希望</a></h3><p class="story-summary">在取得一系列法律胜利后，大学抗议者情绪高涨。在 2024 年亲巴勒斯坦示威期间，数千人被捕并受到学校的强烈抵制，许多被特朗普政府拘留的人已被释放，上周，法院撤销了对最著名群体之一的学校惩罚：</p><div class="story-meta"><a href="https://thehill.com/homenews/education/5771577-college-protests-columbia-stanford-trump-immigration/" class="source-tag" target="_blank" rel="noopener noreferrer">The Hill</a> | 2026-03-09 10:00:00</div></article>
+<article class="story-card"><span class="rank-badge">#6</span><span class="heat-score">5.7 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">时政</div><h3 class="story-title"><a href="https://www.nytimes.com/2026/03/09/us/politics/markwayne-mullin-homeland-security-trump.html" target="_blank" rel="noopener noreferrer">马克韦恩·穆林如何成为特朗普的国土安全人选</a></h3><p class="story-summary">特朗普总统选择负责管理国土安全部的俄克拉荷马州参议员通过将自己定位为“MAGA”战士和特朗普的忠实拥护者，在华盛顿崛起。</p><div class="story-meta"><a href="https://www.nytimes.com/2026/03/09/us/politics/markwayne-mullin-homeland-security-trump.html" class="source-tag" target="_blank" rel="noopener noreferrer">纽约时报 - 时政</a> | 2026-03-09 09:03:11</div></article>
+<article class="story-card"><span class="rank-badge">#7</span><span class="heat-score">5.6 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">时政</div><h3 class="story-title"><a href="https://thehill.com/homenews/campaign/5772190-buttigieg-criticizes-trump-iran-war/" target="_blank" rel="noopener noreferrer">布蒂吉格凭借作战经验批评特朗普在伊朗的“选择战争”</a></h3><p class="story-summary">伊朗战争为前交通部长皮特·布蒂吉格提供了一个充分利用其军事背景的机会，他在一系列公开露面中抨击了特朗普总统的“选择的战争”。作为少数具有战区经验的潜在 2028 年民主党总统候选人之一，布蒂吉格正成为特朗普最响亮的批评者之一</p><div class="story-meta"><a href="https://thehill.com/homenews/campaign/5772190-buttigieg-criticizes-trump-iran-war/" class="source-tag" target="_blank" rel="noopener noreferrer">The Hill</a> | 2026-03-09 10:00:00</div></article>
+<article class="story-card"><span class="rank-badge">#8</span><span class="heat-score">5.3 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">时政</div><h3 class="story-title"><a href="https://www.bbc.com/news/articles/c79542n0grwo?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener noreferrer">随着股市下跌，七国集团国家将召开石油问题紧急会议</a></h3><p class="story-summary">有报道称石油储备可能会被释放以降低价格，财政大臣雷切尔·里夫斯(Rachel Reeves)将参加会谈。</p><div class="story-meta"><a href="https://www.bbc.com/news/articles/c79542n0grwo?at_medium=RSS&amp;at_campaign=rss" class="source-tag" target="_blank" rel="noopener noreferrer">BBC News - 时政</a> | 2026-03-09 09:55:59</div></article>
+<article class="story-card"><span class="rank-badge">#9</span><span class="heat-score">5.2 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">时政</div><h3 class="story-title"><a href="https://www.theguardian.com/world/2026/mar/09/uk-has-sufficient-oil-and-gas-supplies-says-minister-after-two-days-left-reports" target="_blank" rel="noopener noreferrer">部长在报告“还剩两天”后表示，英国天然气供应不会立即受到威胁</a></h3><p class="story-summary">史蒂夫·里德表示，中东局势“显然非常令人担忧”，但“还没有理由过度恐慌” 中东危机——实时更新 尽管油价飙升，英国一位高级部长表示，英国的能源供应并未受到直接威胁，凯尔·斯塔默试图向人们保证中东危机的影响。小鬼</p><div class="story-meta"><a href="https://www.theguardian.com/world/2026/mar/09/uk-has-sufficient-oil-and-gas-supplies-says-minister-after-two-days-left-reports" class="source-tag" target="_blank" rel="noopener noreferrer">卫报 - 时政</a> | 2026-03-09 09:15:55</div></article></div></div>
+<div id="military" class="tab-content"><div class="section-header"><h2 class="section-title">军事</h2><div class="section-meta">全球军事动态与国防新闻</div></div><div class="news-grid-list"><article class="story-card"><span class="rank-badge">#1</span><span class="heat-score">6.2 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">军事</div><h3 class="story-title"><a href="https://www.military.com/daily-news/2026/03/09/investigation-further-suggests-it-was-us-struck-iranian-school-killing-165.html" target="_blank" rel="noopener noreferrer">调查进一步表明是美国袭击了伊朗一所学校，造成165人死亡</a></h3><p class="story-summary"></p><div class="story-meta"><a href="https://www.military.com/daily-news/2026/03/09/investigation-further-suggests-it-was-us-struck-iranian-school-killing-165.html" class="source-tag" target="_blank" rel="noopener noreferrer">Military.com</a> | 2026-03-09 10:04:58</div></article>
+<article class="story-card"><span class="rank-badge">#2</span><span class="heat-score">6.1 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">军事</div><h3 class="story-title"><a href="https://www.defensenews.com/global/europe/2026/03/09/european-nato-nations-reduce-reliance-on-us-arms-imports-sipri-data/" target="_blank" rel="noopener noreferrer">SIPRI数据显示欧洲北约国家减少对美国武器进口的依赖</a></h3><p class="story-summary">一项新的分析显示，欧洲各国政府正在韩国、法国和以色列投入更多的国防资金。</p><div class="story-meta"><a href="https://www.defensenews.com/global/europe/2026/03/09/european-nato-nations-reduce-reliance-on-us-arms-imports-sipri-data/" class="source-tag" target="_blank" rel="noopener noreferrer">Defense News</a> | 2026-03-09 09:30:53</div></article>
+<article class="story-card"><span class="rank-badge">#3</span><span class="heat-score">5.3 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">军事</div><h3 class="story-title"><a href="https://www.defensenews.com/global/europe/2026/03/09/finland-readies-itself-to-be-able-to-host-nukes-in-longtime-policy-departure/" target="_blank" rel="noopener noreferrer">芬兰准备在长期政策偏离中拥有核武器</a></h3><p class="story-summary">政府认为，拟议的法律修改将使该国符合北约的核威慑架构。</p><div class="story-meta"><a href="https://www.defensenews.com/global/europe/2026/03/09/finland-readies-itself-to-be-able-to-host-nukes-in-longtime-policy-departure/" class="source-tag" target="_blank" rel="noopener noreferrer">Defense News</a> | 2026-03-09 10:26:05</div></article></div></div>
+<div id="tech" class="tab-content"><div class="section-header"><h2 class="section-title">科技</h2><div class="section-meta">全球科技创新与产业动态</div></div><div class="news-grid-list"><article class="story-card"><span class="rank-badge">#1</span><span class="heat-score">6.0 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">科技</div><h3 class="story-title"><a href="https://www.wired.com/story/hatch-sleep-week-sale-2026/" target="_blank" rel="noopener noreferrer">Hatch 的促销活动包括 Restore 3、Rest 和 Rest+ 全部折扣</a></h3><p class="story-summary">Hatch 的日出闹钟很受欢迎是有原因的，它本周开始销售。一款旧型号的婴儿音响机也在促销。</p><div class="story-meta"><a href="https://www.wired.com/story/hatch-sleep-week-sale-2026/" class="source-tag" target="_blank" rel="noopener noreferrer">Wired</a> | 2026-03-09 10:39:00</div></article>
+<article class="story-card"><span class="rank-badge">#2</span><span class="heat-score">6.0 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">科技</div><h3 class="story-title"><a href="https://www.wired.com/story/dont-expect-big-surprises-in-the-governments-alien-files/" target="_blank" rel="noopener noreferrer">不要指望政府的外星人档案中会有大惊喜</a></h3><p class="story-summary">唐纳德·特朗普已下令公布与外星人、UAP 和 UFO 相关的文件。如果之前的披露有任何迹象的话，那就做好失望的准备吧。</p><div class="story-meta"><a href="https://www.wired.com/story/dont-expect-big-surprises-in-the-governments-alien-files/" class="source-tag" target="_blank" rel="noopener noreferrer">Wired</a> | 2026-03-09 10:00:00</div></article>
+<article class="story-card"><span class="rank-badge">#3</span><span class="heat-score">5.3 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">科技</div><h3 class="story-title"><a href="https://www.theverge.com/tech/891151/apple-is-going-high-end-with-new-ultra-products-next" target="_blank" rel="noopener noreferrer">苹果下一步将推出新的“Ultra”产品走向高端</a></h3><p class="story-summary">据报道，苹果公司刚刚推出低成本 MacBook Neo 后，正在准备至少三款新产品，以适应其最高端的“ultra”产品线。据彭博社的马克·古尔曼 (Mark Gurman) 称，下一批发布的产品可能不会像 Watch 那样冠以“超”名称，但价格都将高于主线产品。有[…]</p><div class="story-meta"><a href="https://www.theverge.com/tech/891151/apple-is-going-high-end-with-new-ultra-products-next" class="source-tag" target="_blank" rel="noopener noreferrer">The Verge</a> | 2026-03-09 18:44:25</div></article>
+<article class="story-card"><span class="rank-badge">#4</span><span class="heat-score">5.3 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">科技</div><h3 class="story-title"><a href="https://www.theverge.com/column/890713/mabe-fratti-sentir-que-no-sabes-review" target="_blank" rel="noopener noreferrer">听听这个：Mabe Fratti 的实验大提琴流行音乐</a></h3><p class="story-summary">《Kravitz》的开场音符拉开了 Mabe Fratti 2024 年唱片《Sentir Que No Sabes》的序幕，它永远留在了我的脑海中。无论如何，这都不是一张华丽的专辑。但她的大提琴发出嗡嗡的声音，就像弹立式贝斯一样。他们在来到[…]之前响起的方式</p><div class="story-meta"><a href="https://www.theverge.com/column/890713/mabe-fratti-sentir-que-no-sabes-review" class="source-tag" target="_blank" rel="noopener noreferrer">The Verge</a> | 2026-03-09 18:44:25</div></article></div></div>
+<div id="business" class="tab-content"><div class="section-header"><h2 class="section-title">商业</h2><div class="section-meta">商业、财经与市场变化</div></div><div class="news-grid-list"><article class="story-card"><span class="rank-badge">#1</span><span class="heat-score">6.5 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">商业</div><h3 class="story-title"><a href="#" target="_blank" rel="noopener noreferrer">周五人民币兑美元汇率下跌至6.8949</a></h3><p class="story-summary">据中国外汇交易中心数据，周五人民币兑美元汇率中间价下跌19个基点至6.8949。</p><div class="story-meta"><a href="#" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 财经</a> | 2026-03-09 18:44:37</div></article>
+<article class="story-card"><span class="rank-badge">#2</span><span class="heat-score">6.2 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">商业</div><h3 class="story-title"><a href="https://www.bbc.com/news/articles/cm2xp25m9mjo?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener noreferrer">随着石油成本上涨，亚洲各国政府限制燃油价格</a></h3><p class="story-summary">由于担心供应中断导致原油短缺，原油价格已飙升至 100 美元以上。</p><div class="story-meta"><a href="https://www.bbc.com/news/articles/cm2xp25m9mjo?at_medium=RSS&amp;at_campaign=rss" class="source-tag" target="_blank" rel="noopener noreferrer">BBC News - 商业</a> | 2026-03-09 09:44:09</div></article>
+<article class="story-card"><span class="rank-badge">#3</span><span class="heat-score">6.1 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">商业</div><h3 class="story-title"><a href="https://www.theguardian.com/business/live/2026/mar/09/stock-markets-plunge-oil-over-100-a-barrel-g7-emergency-oil-reserves-news-updates" target="_blank" rel="noopener noreferrer">油价飙升超过每桶100美元后股市暴跌，抹去了英国降息的希望 – Business Live</a></h3><p class="story-summary">油价跃升至四年高点，可能引发新一轮通胀，股市下滑，政府债券收益率飙升。伊朗战争推动油价自 2022 年以来首次突破每桶 100 美元。研究表明，油价飙升对贫困人口的打击最为严重。正如我们的经济学编辑希瑟·斯图尔特昨天所写：经济学家最近发表的研究</p><div class="story-meta"><a href="https://www.theguardian.com/business/live/2026/mar/09/stock-markets-plunge-oil-over-100-a-barrel-g7-emergency-oil-reserves-news-updates" class="source-tag" target="_blank" rel="noopener noreferrer">卫报 - 商业</a> | 2026-03-09 10:25:41</div></article>
+<article class="story-card"><span class="rank-badge">#4</span><span class="heat-score">5.9 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">商业</div><h3 class="story-title"><a href="#" target="_blank" rel="noopener noreferrer">即将出台的澳大利亚联邦预算将针对福利欺诈问题</a></h3><p class="story-summary">就业部长米凯莉亚·卡什 (Michaelia Cash) 周一表示，为了使国家预算恢复平衡，澳大利亚政府将针对大约 2 万名福利骗子，他们选择破坏制度而不是积极寻找工作。</p><div class="story-meta"><a href="#" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 财经</a> | 2026-03-09 18:44:37</div></article>
+<article class="story-card"><span class="rank-badge">#5</span><span class="heat-score">5.7 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">商业</div><h3 class="story-title"><a href="https://www.theguardian.com/business/2026/mar/09/yorkshire-water-funding-fines-pay-private-equity-eqt" target="_blank" rel="noopener noreferrer">尽管排污罚款和工资争议，约克郡水务公司仍获得新资金</a></h3><p class="story-summary">私募股权集团 EQT 将持有 42% 的股份，因供应商面临环境记录和首席执行官薪酬审查 商业直播 – 最新动态 一家领先的欧洲投资者将向约克郡水务公司注入新资金，包括帮助支付 6 亿英镑的贷款，尽管该公用事业公司最近被处以巨额排污罚款，且出现了高管薪酬丑闻。 EQT，瑞典公关公司</p><div class="story-meta"><a href="https://www.theguardian.com/business/2026/mar/09/yorkshire-water-funding-fines-pay-private-equity-eqt" class="source-tag" target="_blank" rel="noopener noreferrer">卫报 - 商业</a> | 2026-03-09 10:11:02</div></article>
+<article class="story-card"><span class="rank-badge">#6</span><span class="heat-score">5.6 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">商业</div><h3 class="story-title"><a href="https://www.bbc.com/news/articles/c79542n0grwo?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener noreferrer">随着股市下跌，七国集团国家将召开石油问题紧急会议</a></h3><p class="story-summary">有报道称石油储备可能会被释放以降低价格，财政大臣雷切尔·里夫斯(Rachel Reeves)将参加会谈。</p><div class="story-meta"><a href="https://www.bbc.com/news/articles/c79542n0grwo?at_medium=RSS&amp;at_campaign=rss" class="source-tag" target="_blank" rel="noopener noreferrer">BBC News - 商业</a> | 2026-03-09 09:55:59</div></article>
+<article class="story-card"><span class="rank-badge">#7</span><span class="heat-score">5.5 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">商业</div><h3 class="story-title"><a href="https://www.ft.com/content/9b08457e-6689-4f2d-8967-816c184e4fe2" target="_blank" rel="noopener noreferrer">由于交易员押注英国央行加息，金边债券市场进一步下滑</a></h3><p class="story-summary">油价突破每桶100美元，英国政府债券市场再度承压</p><div class="story-meta"><a href="https://www.ft.com/content/9b08457e-6689-4f2d-8967-816c184e4fe2" class="source-tag" target="_blank" rel="noopener noreferrer">金融时报</a> | 2026-03-09 10:29:29</div></article>
+<article class="story-card"><span class="rank-badge">#8</span><span class="heat-score">5.3 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">商业</div><h3 class="story-title"><a href="https://www.nytimes.com/2026/03/09/business/dog-grooming-wellness-costs.html" target="_blank" rel="noopener noreferrer">1,000 美元的狗狗美容课程？归咎于健康产业。</a></h3><p class="story-summary">宠物主人正在将他们的健康信念和做法延伸到他们毛茸茸的朋友身上。</p><div class="story-meta"><a href="https://www.nytimes.com/2026/03/09/business/dog-grooming-wellness-costs.html" class="source-tag" target="_blank" rel="noopener noreferrer">纽约时报 - 商业</a> | 2026-03-09 10:38:45</div></article></div></div>
+<div id="health" class="tab-content"><div class="section-header"><h2 class="section-title">健康</h2><div class="section-meta">公共卫生与医学动态</div></div><div class="news-grid-list"><article class="story-card"><span class="rank-badge">#1</span><span class="heat-score">6.3 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">健康</div><h3 class="story-title"><a href="#" target="_blank" rel="noopener noreferrer">中国聚焦：针对艾滋病学生的单独考试地点引发争议</a></h3><p class="story-summary">一所专门为艾滋病毒学生开设的学校因安排 16 名学生与非艾滋病毒学生在不同的教室参加高考而引起争议。</p><div class="story-meta"><a href="#" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 健康</a> | 2026-03-09 18:44:39</div></article>
+<article class="story-card"><span class="rank-badge">#2</span><span class="heat-score">5.7 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">健康</div><h3 class="story-title"><a href="#" target="_blank" rel="noopener noreferrer">阿富汗医生寻求与中国合作以使传统医学合法化</a></h3><p class="story-summary">由于厌倦了本国的低质量药物，仍有相当一部分阿富汗人仍然坚持使用传统药物，无论中心和省份有什么地方都可以使用传统药物。</p><div class="story-meta"><a href="#" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 健康</a> | 2026-03-09 18:44:39</div></article></div></div>
+<div id="science" class="tab-content"><div class="section-header"><h2 class="section-title">科学</h2><div class="section-meta">科研前沿与科学进展</div></div><div class="news-grid-list"></div></div>
+<div id="china" class="tab-content"><div class="section-header"><h2 class="section-title">中国</h2><div class="section-meta">中国相关新闻</div></div><div class="news-grid-list"></div></div>
+<div id="sports" class="tab-content"><div class="section-header"><h2 class="section-title">体育</h2><div class="section-meta">体育赛事与产业动态</div></div><div class="news-grid-list"><article class="story-card"><span class="rank-badge">#1</span><span class="heat-score">5.7 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">体育</div><h3 class="story-title"><a href="#" target="_blank" rel="noopener noreferrer">丁朱朱夺国际乒联世界巡回赛中国公开赛女双冠军</a></h3><p class="story-summary">周日，中国组合丁宁/朱雨玲获得国际乒联世界巡回赛中国乒乓球公开赛女双冠军。</p><div class="story-meta"><a href="#" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 体育</a> | 2026-03-09 18:44:39</div></article>
+<article class="story-card"><span class="rank-badge">#2</span><span class="heat-score">5.6 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">体育</div><h3 class="story-title"><a href="#" target="_blank" rel="noopener noreferrer">全国各地举办活动庆祝即将到来的国际儿童节</a></h3><p class="story-summary"></p><div class="story-meta"><a href="#" class="source-tag" target="_blank" rel="noopener noreferrer">新华网 - 体育</a> | 2026-03-09 18:44:39</div></article>
+<article class="story-card"><span class="rank-badge">#3</span><span class="heat-score">5.4 热度</span><span class="verification-status">⚠️ 部分验证</span><div class="category-tag">体育</div><h3 class="story-title"><a href="https://www.bbc.com/sport/rugby-union/articles/c62gek7wkreo?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener noreferrer">博思威克可以做出四个重大呼吁来复兴英格兰</a></h3><p class="story-summary">在遭遇三连败并因输给意大利而对后防线进行大修后，英格兰主教练史蒂夫·博思威克可能会对法国之行做出重大改变。</p><div class="story-meta"><a href="https://www.bbc.com/sport/rugby-union/articles/c62gek7wkreo?at_medium=RSS&amp;at_campaign=rss" class="source-tag" target="_blank" rel="noopener noreferrer">BBC News - 体育</a> | 2026-03-09 10:33:43</div></article></div></div>
+<footer class="footer">
+            <p>每日新闻聚合 | <a href="#" class="sources-link" id="sourcesLink">精选55+信源</a> | 更新时间：2026-03-09 18:45</p>
+        </footer>
+    </div>
+
+    <!-- 右侧抽屉 -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <div class="drawer" id="sourcesDrawer">
+        <div class="drawer-header">
+            <h3 class="drawer-title">RSS 信源列表</h3>
+            <button class="drawer-close" id="drawerClose">&times;</button>
+        </div>
+        <div class="drawer-content">
+            <div class="source-category">
+                <h4 class="source-cat-title">国际 (10)</h4>
+                <ul class="source-list">
+                    <li>BBC News - 国际</li>
+                    <li>BBC News - 英国</li>
+                    <li>纽约时报 - 国际</li>
+                    <li>路透社 - 国际</li>
+                    <li>卫报 - 国际</li>
+                    <li>CNN - 国际</li>
+                    <li>半岛电视台</li>
+                    <li>新华网 - 国际</li>
+                    <li>新华网 - 文化</li>
+                    <li>新华网 - 娱乐</li>
+                </ul>
+            </div>
+            <div class="source-category">
+                <h4 class="source-cat-title">中国 (8)</h4>
+                <ul class="source-list">
+                    <li>新华网 - 中国</li>
+                    <li>新华网 - 时政</li>
+                    <li>新华网 - 财经</li>
+                    <li>新华网 - 科技</li>
+                    <li>新华网 - 体育</li>
+                    <li>新华网 - 健康</li>
+                    <li>人民日报</li>
+                    <li>解放军报</li>
+                </ul>
+            </div>
+            <div class="source-category">
+                <h4 class="source-cat-title">时政 (5)</h4>
+                <ul class="source-list">
+                    <li>BBC News - 时政</li>
+                    <li>纽约时报 - 时政</li>
+                    <li>卫报 - 时政</li>
+                    <li>Politico</li>
+                    <li>The Hill</li>
+                    <li>新华网 - 中国</li>
+                    <li>新华网 - 时政</li>
+                </ul>
+            </div>
+            <div class="source-category">
+                <h4 class="source-cat-title">军事 (5)</h4>
+                <ul class="source-list">
+                    <li>解放军报</li>
+                    <li>新华网 - 军事</li>
+                    <li>Defense News</li>
+                    <li>Military.com</li>
+                    <li>Task & Purpose</li>
+                </ul>
+            </div>
+            <div class="source-category">
+                <h4 class="source-cat-title">科技 (8)</h4>
+                <ul class="source-list">
+                    <li>BBC News - 科技</li>
+                    <li>纽约时报 - 科技</li>
+                    <li>Ars Technica</li>
+                    <li>路透社 - 科技</li>
+                    <li>卫报 - 科技</li>
+                    <li>TechCrunch</li>
+                    <li>The Verge</li>
+                    <li>Wired</li>
+                    <li>新华网 - 科技</li>
+                </ul>
+            </div>
+            <div class="source-category">
+                <h4 class="source-cat-title">商业 (6)</h4>
+                <ul class="source-list">
+                    <li>BBC News - 商业</li>
+                    <li>纽约时报 - 商业</li>
+                    <li>路透社 - 商业</li>
+                    <li>卫报 - 商业</li>
+                    <li>金融时报</li>
+                    <li>华尔街日报</li>
+                    <li>新华网 - 财经</li>
+                </ul>
+            </div>
+            <div class="source-category">
+                <h4 class="source-cat-title">健康 (4)</h4>
+                <ul class="source-list">
+                    <li>BBC News - 健康</li>
+                    <li>纽约时报 - 健康</li>
+                    <li>MedPage Today</li>
+                    <li>WHO</li>
+                    <li>新华网 - 健康</li>
+                </ul>
+            </div>
+            <div class="source-category">
+                <h4 class="source-cat-title">科学 (4)</h4>
+                <ul class="source-list">
+                    <li>BBC News - 科学</li>
+                    <li>纽约时报 - 科学</li>
+                    <li>卫报 - 科学</li>
+                    <li>Nature</li>
+                    <li>Science Magazine</li>
+                </ul>
+            </div>
+            <div class="source-category">
+                <h4 class="source-cat-title">体育 (3)</h4>
+                <ul class="source-list">
+                    <li>BBC News - 体育</li>
+                    <li>纽约时报 - 体育</li>
+                    <li>卫报 - 体育</li>
+                    <li>ESPN</li>
+                    <li>新华网 - 体育</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    </div>
+<script>
+        // Tab切换
+        document.querySelectorAll('.tab-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // 抽屉功能
+        const sourcesLink = document.getElementById('sourcesLink');
+        const sourcesDrawer = document.getElementById('sourcesDrawer');
+        const drawerOverlay = document.getElementById('drawerOverlay');
+        const drawerClose = document.getElementById('drawerClose');
+
+        function openDrawer() {
+            sourcesDrawer.classList.add('active');
+            drawerOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDrawer() {
+            sourcesDrawer.classList.remove('active');
+            drawerOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        sourcesLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            openDrawer();
+        });
+
+        drawerClose.addEventListener('click', closeDrawer);
+        drawerOverlay.addEventListener('click', closeDrawer);
+
+        // ESC键关闭抽屉
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && sourcesDrawer.classList.contains('active')) {
+                closeDrawer();
+            }
+        });
+    </script>
+</body>
+</html>

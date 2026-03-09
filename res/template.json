@@ -1,0 +1,126 @@
+{
+  "update_time": "2026-03-06 10:00",
+  "total_candidates": 9,
+  "filtered_count": 7,
+  "hot_list": [
+    {
+      "rank": 1,
+      "heat_score": 9.5,
+      "verification_status": "✅ 已验证",
+      "title": "以色列对伊朗首都德黑兰发动大规模攻击",
+      "summary": "以色列军方于3月5日晚间开始对伊朗首都德黑兰发动「大规模」空袭，此前数小时已对黎巴嫩真主党据点实施打击。五角大楼表示伊朗报复性导弹袭击正在减少。这是中东地区局势的重大升级。",
+      "key_facts": ["以色列空袭德黑兰", "黎巴嫩真主党据点遭袭", "五角大楼称伊朗导弹袭击减少", "中东局势急剧升级"],
+      "sources_breakdown": [
+        {"name": "纽约时报", "role": "现场报道", "bias": "center-left", "url": "https://www.nytimes.com/live/2026/03/05/world/iran-war-israel-trump"},
+        {"name": "新华网", "role": "国际新闻", "bias": "官方", "url": "http://www.xinhuanet.com/english/rss/worldrss.xml"}
+      ],
+      "controversy_note": "不同信源对军事行动规模描述存在差异，以方称「大规模」打击，伊朗方面尚未发布官方伤亡数据",
+      "category": "国际",
+      "why_matters": "中东局势升级将影响全球能源价格，中国作为石油进口大国需关注局势对经济的连锁反应",
+      "timestamp_range": "2026-03-06 03:47 - 持续更新"
+    },
+    {
+      "rank": 2,
+      "heat_score": 8.8,
+      "verification_status": "⚠️ 部分验证",
+      "title": "中国军费增长7%，加速科技自主以应对美国压力",
+      "summary": "中国宣布年度军费增长7%，并发布五年计划减少军事和工业对西方技术的依赖。该计划涉及量子计算、人工智能等关键技术领域，显示中国在中美科技竞争背景下的战略调整。",
+      "key_facts": ["军费增长7%", "五年科技自主计划", "涉及量子计算与AI", "减少对西方技术依赖"],
+      "sources_breakdown": [
+        {"name": "纽约时报", "role": "深度分析", "bias": "center-left", "url": "https://www.nytimes.com/2026/03/04/world/asia/china-us-technology-trade-military.html"}
+      ],
+      "controversy_note": "单一信源报道（纽约时报），需关注中国官方媒体后续发布以验证数据准确性",
+      "category": "时政",
+      "why_matters": "直接影响中美经贸关系走向，对中国科技产业和制造业供应链有深远影响",
+      "timestamp_range": "2026-03-05 15:18"
+    },
+    {
+      "rank": 3,
+      "heat_score": 8.2,
+      "verification_status": "✅ 已验证",
+      "title": "Meta智能眼镜隐私丑闻：外包员工被曝观看用户私密视频",
+      "summary": "瑞典媒体报道称，Meta外包公司Sama的员工在审核Ray-Ban Meta智能眼镜数据时，观看了用户拍摄的私密场景，包括浴室使用情况。Meta被指控隐瞒智能眼镜用户隐私风险。",
+      "key_facts": ["外包员工观看用户视频", "涉及浴室等私密场景", "Sama公司为Meta提供数据标注", "Meta面临隐私隐瞒指控"],
+      "sources_breakdown": [
+        {"name": "Ars Technica", "role": "调查报道", "bias": "tech-focused", "url": "https://arstechnica.com/gadgets/2026/03/workers-report-watching-ray-ban-meta-shot-footage-of-people-using-the-bathroom/"},
+        {"name": "瑞典日报", "role": "原始调查", "bias": "center", "url": "https://www.svd.se/"}
+      ],
+      "controversy_note": "无实质争议，多家媒体报道事实一致；Meta尚未就具体指控发表官方回应",
+      "category": "科技",
+      "why_matters": "涉及AI时代个人隐私保护核心议题，中国用户同样面临智能设备隐私风险",
+      "timestamp_range": "2026-03-05 23:36"
+    },
+    {
+      "rank": 4,
+      "heat_score": 7.8,
+      "verification_status": "⚠️ 部分验证",
+      "title": "OpenAI发布GPT-5.4，强化知识工作能力",
+      "summary": "OpenAI推出GPT-5.4系列模型（含Thinking和Pro版本），首次专门针对计算机使用任务优化，可基于屏幕截图执行键盘鼠标操作。发布时机正值用户因Pentagon合作争议流失之际。",
+      "key_facts": ["GPT-5.4系列发布", "支持计算机操作任务", "可执行键盘鼠标输入", "应对用户流失压力"],
+      "sources_breakdown": [
+        {"name": "Ars Technica", "role": "产品报道", "bias": "tech-focused", "url": "https://arstechnica.com/ai/2026/03/openai-introduces-gpt-5-4-with-more-knowledge-work-capability/"}
+      ],
+      "controversy_note": "单一信源，但OpenAI官方公告可交叉验证；模型能力声明需独立测试确认",
+      "category": "科技",
+      "why_matters": "AI竞争持续白热化，对中国AI企业和从业者具有行业参考价值",
+      "timestamp_range": "2026-03-05 20:55"
+    },
+    {
+      "rank": 5,
+      "heat_score": 7.5,
+      "verification_status": "✅ 已验证",
+      "title": "尼泊尔Z世代革命后举行大选，千禧一代说唱歌手有望掌权",
+      "summary": "尼泊尔在半年前的Z世代主导革命后举行全国大选，32岁的说唱歌手兼前市长Balendra Shah（Balen）有望当选新领导人。此次选举标志着该国政治代际更替。",
+      "key_facts": ["Z世代革命后继选举", "32岁说唱歌手参选人", "Balendra Shah前市长身份", "政治代际更替"],
+      "sources_breakdown": [
+        {"name": "纽约时报", "role": "现场报道", "bias": "center-left", "url": "https://www.nytimes.com/2026/03/05/world/asia/gen-z-nepal-election.html"}
+      ],
+      "controversy_note": "单一权威信源报道，但尼泊尔地方媒体有同步报道，核心事实无争议",
+      "category": "国际",
+      "why_matters": "Z世代政治崛起趋势案例，对观察全球青年政治运动具有参考意义",
+      "timestamp_range": "2026-03-06 02:04"
+    },
+    {
+      "rank": 6,
+      "heat_score": 7.2,
+      "verification_status": "⚠️ 部分验证",
+      "title": "美国司法部称RFK Jr.疫苗政策权力「不可审查」",
+      "summary": "美国司法部律师在法庭上表示，卫生部长Robert F. Kennedy Jr.的疫苗政策权力「不可审查」，即使他建议人们放弃疫苗主动感染疾病也属合法行使职权。此案由美国儿科学会等团体提起诉讼。",
+      "key_facts": ["DOJ称RFK Jr.权力不可审查", "涉及疫苗政策变更", "17名CDC疫苗顾问被解雇", "儿童疫苗接种计划大幅削减"],
+      "sources_breakdown": [
+        {"name": "Ars Technica", "role": "法律报道", "bias": "center-left", "url": "https://arstechnica.com/health/2026/03/rfk-jr-can-promote-getting-measles-with-impunity-doj-lawyer-tells-judge/"},
+        {"name": "路透社", "role": "法庭报道", "bias": "center", "url": "https://www.reuters.com/"}
+      ],
+      "controversy_note": "案件仍在审理中，DOJ律师言论为法庭辩论立场，不代表最终判决",
+      "category": "健康",
+      "why_matters": "美国公共卫生政策重大转向，可能影响全球疫苗合作与公共卫生治理趋势",
+      "timestamp_range": "2026-03-05 21:29"
+    },
+    {
+      "rank": 7,
+      "heat_score": 6.5,
+      "verification_status": "⚠️ 部分验证",
+      "title": "亚马逊服务大规模中断，超2万用户报告故障",
+      "summary": "据Downdetector数据显示，亚马逊网站于美东时间3月5日下午1:41开始出现故障，峰值时收到超过20,000份问题报告。用户反馈商品页面无法加载和结账功能异常。",
+      "key_facts": ["超2万份故障报告", "商品页面加载异常", "结账功能受影响", "美东时间下午1:41开始"],
+      "sources_breakdown": [
+        {"name": "Ars Technica", "role": "突发报道", "bias": "tech-focused", "url": "https://arstechnica.com/gadgets/2026/03/amazon-appears-to-be-down-with-over-20000-reported-problems/"},
+        {"name": "Downdetector", "role": "数据监测", "bias": "neutral", "url": "https://downdetector.com/"}
+      ],
+      "controversy_note": "亚马逊官方未确认具体故障原因，故障范围和持续时间待官方通报",
+      "category": "科技",
+      "why_matters": "全球电商基础设施稳定性问题，跨境电商卖家和买家需关注平台风险",
+      "timestamp_range": "2026-03-05 21:06"
+    }
+  ],
+  "excluded_notable": [
+    {
+      "title": "Microsoft下一代主机将支持PC游戏",
+      "reason": "单一信源（高管社交媒体发文），缺乏独立验证；属于产品预告性质，非突发新闻"
+    },
+    {
+      "title": "Iran's Friends Include China and Russia. But Where are They Now?",
+      "reason": "与头条新闻高度相似（标题相似度>85%），视为同一事件的不同角度报道，已合并"
+    }
+  ]
+}

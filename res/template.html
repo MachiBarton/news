@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>每日新闻 - 全球资讯聚合</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Serif SC', Georgia, 'Times New Roman', serif;
+            background-color: #fff;
+            color: #121212;
+            line-height: 1.6;
+        }
+        .masthead {
+            text-align: center;
+            padding: 20px 0 15px;
+            border-bottom: 1px solid #e2e2e2;
+        }
+        .masthead-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 52px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .masthead-title a {
+            color: #121212;
+            text-decoration: none;
+        }
+        .masthead-date {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .lunar-full {
+            display: inline-block;
+            margin-left: 12px;
+        }
+        .lunar-ganzhi {
+            color: #8B4513;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        .lunar-date {
+            color: #a81817;
+            font-weight: 500;
+        }
+        .lunar-shengxiao {
+            color: #d4a574;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .tab-nav {
+            border-bottom: 2px solid #121212;
+            border-top: 1px solid #e2e2e2;
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .tab-list {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
+        }
+        .tab-list li { margin: 0; }
+        .tab-list a {
+            display: block;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            padding: 15px 20px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab-list a:hover { color: #121212; }
+        .tab-list a.active {
+            color: #121212;
+            border-bottom-color: #121212;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .section-header {
+            border-bottom: 1px solid #121212;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+        }
+        .section-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .section-meta {
+            font-size: 13px;
+            color: #666;
+            font-family: 'Inter', sans-serif;
+        }
+        .news-grid-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+        .story-card {
+            border-bottom: 1px solid #e2e2e2;
+            padding-bottom: 20px;
+        }
+        .rank-badge {
+            display: inline-block;
+            background: #121212;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            font-family: 'Inter', sans-serif;
+        }
+        .heat-score {
+            display: inline-block;
+            color: #a81817;
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 10px;
+            font-family: 'Inter', sans-serif;
+        }
+        .verification-status {
+            display: inline-block;
+            font-size: 11px;
+            margin-left: 10px;
+            font-family: 'Inter', sans-serif;
+        }
+        .category-tag {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #a81817;
+            margin-bottom: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+        .story-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+        .story-title a {
+            color: #121212;
+            text-decoration: none;
+        }
+        .story-title a:hover { color: #666; }
+        .story-summary {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .story-meta {
+            font-size: 11px;
+            color: #666;
+            font-family: 'Inter', sans-serif;
+        }
+        .source-tag {
+            display: inline-block;
+            font-size: 11px;
+            color: #326891;
+            margin-right: 10px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .source-tag:hover {
+            text-decoration: underline;
+            color: #1a4a6e;
+        }
+        .sources-link {
+            color: #326891;
+            text-decoration: underline;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .sources-link:hover {
+            color: #1a4a6e;
+        }
+        /* 右侧抽屉样式 */
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .drawer-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background: #fff;
+            z-index: 999;
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .drawer.active {
+            right: 0;
+        }
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #e2e2e2;
+            background: #f8f9fa;
+        }
+        .drawer-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+        }
+        .drawer-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #666;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .drawer-close:hover {
+            background: #e2e2e2;
+            color: #121212;
+        }
+        .drawer-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .source-category {
+            margin-bottom: 24px;
+        }
+        .source-cat-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #121212;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #121212;
+        }
+        .source-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .source-list li {
+            font-size: 13px;
+            color: #333;
+            padding: 6px 0;
+            border-bottom: 1px dotted #e2e2e2;
+            font-family: 'Inter', sans-serif;
+        }
+        .source-list li:last-child {
+            border-bottom: none;
+        }
+        @media (max-width: 500px) {
+            .drawer {
+                width: 100%;
+                right: -100%;
+            }
+        }
+        .footer {
+            margin-top: 60px;
+            padding: 30px 0;
+            border-top: 1px solid #121212;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            font-family: 'Inter', sans-serif;
+        }
+        @media (max-width: 900px) {
+            .news-grid-list { grid-template-columns: repeat(2, 1fr); }
+            .tab-list { flex-wrap: wrap; }
+            .tab-list a { padding: 10px 15px; font-size: 12px; }
+        }
+        @media (max-width: 600px) {
+            .news-grid-list { grid-template-columns: 1fr; }
+            .masthead-title { font-size: 36px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="masthead">
+        <h1 class="masthead-title"><a href="#">每日新闻</a></h1>
+        <div class="masthead-date">
+            {{GENERATE_DATE}} {{WEEKDAY}}
+            <span class="lunar-full">
+                <span class="lunar-ganzhi">{{GANZHI_YEAR}}</span>
+                <span class="lunar-date">农历{{LUNAR_DATE}}</span>
+                <span class="lunar-shengxiao">{{SHENGXIAO}}年</span>
+            </span>
+        </div>
+    </header>
+
+    <nav class="tab-nav">
+        <ul class="tab-list">
+            <li><a href="#" class="tab-link active" data-tab="top10">头条10条</a></li>
+            <li><a href="#" class="tab-link" data-tab="world">国际</a></li>
+            <li><a href="#" class="tab-link" data-tab="politics">时政</a></li>
+            <li><a href="#" class="tab-link" data-tab="military">军事</a></li>
+            <li><a href="#" class="tab-link" data-tab="tech">科技</a></li>
+            <li><a href="#" class="tab-link" data-tab="business">商业</a></li>
+            <li><a href="#" class="tab-link" data-tab="health">健康</a></li>
+            <li><a href="#" class="tab-link" data-tab="science">科学</a></li>
+            <li><a href="#" class="tab-link" data-tab="china">中国</a></li>
+            <li><a href="#" class="tab-link" data-tab="sports">体育</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- 头条10条 -->
+        <div id="top10" class="tab-content active">
+            <div class="section-header">
+                <h2 class="section-title">今日头条</h2>
+                <div class="section-meta">全平台最重要的10条新闻 | 更新时间：{{UPDATE_TIME}}</div>
+            </div>
+
+            <div class="news-grid-list">
+                <article class="story-card">
+                    <span class="rank-badge">#1</span>
+                    <span class="heat-score">9.5 热度</span>
+                    <span class="verification-status">✅ 已验证</span>
+                    <div class="category-tag">国际</div>
+                    <h3 class="story-title"><a href="#">以色列对伊朗首都德黑兰发动大规模攻击</a></h3>
+                    <p class="story-summary">以色列军方于3月5日晚间开始对伊朗首都德黑兰发动「大规模」空袭，此前数小时已对黎巴嫩真主党据点实施打击。五角大楼表示伊朗报复性导弹袭击正在减少。</p>
+                    <div class="story-meta">
+                        <a href="https://www.nytimes.com" class="source-tag" target="_blank">纽约时报</a>
+                        <a href="https://www.bbc.com" class="source-tag" target="_blank">BBC</a> | {{TIME_RELATIVE}}
+                    </div>
+                </article>
+
+                <article class="story-card">
+                    <span class="rank-badge">#2</span>
+                    <span class="heat-score">8.8 热度</span>
+                    <span class="verification-status">⚠️ 部分验证</span>
+                    <div class="category-tag">时政</div>
+                    <h3 class="story-title"><a href="#">中国军费增长7%，加速科技自主以应对美国压力</a></h3>
+                    <p class="story-summary">中国宣布年度军费增长7%，并发布五年计划减少军事和工业对西方技术的依赖。该计划涉及量子计算、人工智能等关键技术领域。</p>
+                    <div class="story-meta">
+                        <span class="source-tag">纽约时报</span> | {{TIME_RELATIVE}}
+                    </div>
+                </article>
+
+                <article class="story-card">
+                    <span class="rank-badge">#3</span>
+                    <span class="heat-score">8.2 热度</span>
+                    <span class="verification-status">✅ 已验证</span>
+                    <div class="category-tag">科技</div>
+                    <h3 class="story-title"><a href="#">Meta智能眼镜隐私丑闻：外包员工被曝观看用户私密视频</a></h3>
+                    <p class="story-summary">瑞典媒体报道称，Meta外包公司Sama的员工在审核Ray-Ban Meta智能眼镜数据时，观看了用户拍摄的私密场景，包括浴室使用情况。</p>
+                    <div class="story-meta">
+                        <a href="https://arstechnica.com" class="source-tag" target="_blank">Ars Technica</a> | {{TIME_RELATIVE}}
+                    </div>
+                </article>
+
+                <article class="story-card">
+                    <span class="rank-badge">#4</span>
+                    <span class="heat-score">7.8 热度</span>
+                    <span class="verification-status">⚠️ 部分验证</span>
+                    <div class="category-tag">科技</div>
+                    <h3 class="story-title"><a href="#">OpenAI发布GPT-5.4，强化知识工作能力</a></h3>
+                    <p class="story-summary">OpenAI推出GPT-5.4系列模型，首次专门针对计算机使用任务优化，可基于屏幕截图执行键盘鼠标操作。发布时机正值用户流失压力之际。</p>
+                    <div class="story-meta">
+                        <a href="https://arstechnica.com" class="source-tag" target="_blank">Ars Technica</a> | {{TIME_RELATIVE}}
+                    </div>
+                </article>
+
+                <article class="story-card">
+                    <span class="rank-badge">#5</span>
+                    <span class="heat-score">7.5 热度</span>
+                    <span class="verification-status">✅ 已验证</span>
+                    <div class="category-tag">国际</div>
+                    <h3 class="story-title"><a href="#">尼泊尔Z世代革命后举行大选，千禧一代说唱歌手有望掌权</a></h3>
+                    <p class="story-summary">尼泊尔在半年前的Z世代主导革命后举行全国大选，32岁的说唱歌手兼前市长Balendra Shah有望当选新领导人。此次选举标志着该国政治代际更替。</p>
+                    <div class="story-meta">
+                        <span class="source-tag">纽约时报</span> | {{TIME_RELATIVE}}
+                    </div>
+                </article>
+
+                <article class="story-card">
+                    <span class="rank-badge">#6</span>
+                    <span class="heat-score">7.2 热度</span>
+                    <span class="verification-status">⚠️ 部分验证</span>
+                    <div class="category-tag">健康</div>
+                    <h3 class="story-title"><a href="#">美国司法部称RFK Jr.疫苗政策权力「不可审查」</a></h3>
+                    <p class="story-summary">美国司法部律师在法庭上表示，卫生部长Robert F. Kennedy Jr.的疫苗政策权力「不可审查」，即使他建议人们放弃疫苗主动感染疾病也属合法。</p>
+                    <div class="story-meta">
+                        <a href="https://arstechnica.com" class="source-tag" target="_blank">Ars Technica</a> | {{TIME_RELATIVE}}
+                    </div>
+                </article>
+
+                <article class="story-card">
+                    <span class="rank-badge">#7</span>
+                    <span class="heat-score">6.5 热度</span>
+                    <span class="verification-status">⚠️ 部分验证</span>
+                    <div class="category-tag">商业</div>
+                    <h3 class="story-title"><a href="#">亚马逊服务大规模中断，超2万用户报告故障</a></h3>
+                    <p class="story-summary">据Downdetector数据显示，亚马逊网站于美东时间3月5日下午开始出现故障，峰值时收到超过20,000份问题报告。用户反馈商品页面无法加载。</p>
+                    <div class="story-meta">
+                        <a href="https://arstechnica.com" class="source-tag" target="_blank">Ars Technica</a> | {{TIME_RELATIVE}}
+                    </div>
+                </article>
+
+                <article class="story-card">
+                    <span class="rank-badge">#8</span>
+                    <span class="heat-score">6.2 热度</span>
+                    <span class="verification-status">✅ 已验证</span>
+                    <div class="category-tag">商业</div>
+                    <h3 class="story-title"><a href="#">全球股市因经济复苏希望而上涨</a></h3>
+                    <p class="story-summary">全球主要股市因经济数据改善和企业盈利预期上调而普遍上涨。投资者对经济软着陆的信心增强，推动风险资产价格上涨。</p>
+                    <div class="story-meta">
+                        <a href="https://www.wsj.com" class="source-tag" target="_blank">华尔街日报</a> | {{TIME_RELATIVE}}
+                    </div>
+                </article>
+
+                <article class="story-card">
+                    <span class="rank-badge">#9</span>
+                    <span class="heat-score">5.8 热度</span>
+                    <span class="verification-status">✅ 已验证</span>
+                    <div class="category-tag">科学</div>
+                    <h3 class="story-title"><a href="#">新气候报告警告冰盖融化正在加速</a></h3>
+                    <p class="story-summary">最新气候科学报告显示，格陵兰岛和南极洲冰盖融化速度超出此前预期，可能导致到2100年海平面上升幅度增加30厘米。</p>
+                    <div class="story-meta">
+                        <a href="https://www.nature.com" class="source-tag" target="_blank">自然</a> | {{TIME_RELATIVE}}
+                    </div>
+                </article>
+
+                <article class="story-card">
+                    <span class="rank-badge">#10</span>
+                    <span class="heat-score">5.5 热度</span>
+                    <span class="verification-status">✅ 已验证</span>
+                    <div class="category-tag">体育</div>
+                    <h3 class="story-title"><a href="#">欧冠四分之一决赛名单确定</a></h3>
+                    <p class="story-summary">欧冠淘汰赛阶段比赛全部结束，八强球队名单正式确定。四分之一决赛抽签结果出炉，多场强强对话即将上演。</p>
+                    <div class="story-meta">
+                        <a href="https://www.espn.com" class="source-tag" target="_blank">ESPN</a> | {{TIME_RELATIVE}}
+                    </div>
+                </article>
+            </div>
+        </div>
+
+        <!-- 国际 -->
+        <div id="world" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">国际新闻</h2>
+                <div class="section-meta">来自全球各地的10条重要新闻</div>
+            </div>
+            <div class="news-grid-list">
+                <article class="story-card">
+                    <span class="rank-badge">#1</span>
+                    <span class="heat-score">9.5</span>
+                    <div class="category-tag">中东</div>
+                    <h3 class="story-title"><a href="#">以色列对德黑兰发动大规模攻击</a></h3>
+                    <p class="story-summary">以色列军方开始对伊朗首都发动空袭，此前已打击黎巴嫩真主党据点。</p>
+                    <div class="story-meta"><a href="https://www.bbc.com" class="source-tag" target="_blank">BBC</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#2</span>
+                    <span class="heat-score">7.5</span>
+                    <div class="category-tag">亚洲</div>
+                    <h3 class="story-title"><a href="#">尼泊尔选举：Z世代革命继续</a></h3>
+                    <p class="story-summary">32岁说唱歌手兼前市长有望在大选中成为新领导人。</p>
+                    <div class="story-meta"><span class="source-tag">纽约时报</span> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#3</span>
+                    <span class="heat-score">7.2</span>
+                    <div class="category-tag">欧洲</div>
+                    <h3 class="story-title"><a href="#">欧盟宣布2035年新气候目标</a></h3>
+                    <p class="story-summary">欧盟领导人就气候峰会前的碳减排目标达成一致。</p>
+                    <div class="story-meta"><a href="https://www.reuters.com" class="source-tag" target="_blank">路透社</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#4</span>
+                    <span class="heat-score">6.8</span>
+                    <div class="category-tag">非洲</div>
+                    <h3 class="story-title"><a href="#">南非回应特朗普「种族主义」言论</a></h3>
+                    <p class="story-summary">总统拉马福萨在专访中谈及与华盛顿的关系。</p>
+                    <div class="story-meta"><a href="https://www.theguardian.com" class="source-tag" target="_blank">卫报</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#5</span>
+                    <span class="heat-score">6.5</span>
+                    <div class="category-tag">美洲</div>
+                    <h3 class="story-title"><a href="#">委内瑞拉释放被拘留数月的美国人</a></h3>
+                    <p class="story-summary">James Luckey-Lange回忆被拘留、挨饿和殴打的经历。</p>
+                    <div class="story-meta"><span class="source-tag">纽约时报</span> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#6</span>
+                    <span class="heat-score">6.2</span>
+                    <div class="category-tag">亚洲</div>
+                    <h3 class="story-title"><a href="#">日韩举行历史性防务会谈</a></h3>
+                    <p class="story-summary">计划首次联合军演，应对与朝鲜的紧张局势。</p>
+                    <div class="story-meta"><a href="https://www.cnn.com" class="source-tag" target="_blank">CNN</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#7</span>
+                    <span class="heat-score">5.8</span>
+                    <div class="category-tag">中东</div>
+                    <h3 class="story-title"><a href="#">以色列在斋月期间关闭阿克萨清真寺</a></h3>
+                    <p class="story-summary">斋月期间临时关闭该宗教场所，此前该地曾发生紧张事件。</p>
+                    <div class="story-meta"><a href="https://www.aljazeera.com" class="source-tag" target="_blank">半岛电视台</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#8</span>
+                    <span class="heat-score">5.5</span>
+                    <div class="category-tag">欧洲</div>
+                    <h3 class="story-title"><a href="#">乌克兰与俄罗斯再次交换战俘</a></h3>
+                    <p class="story-summary">在阿联酋斡旋下，双方各返回100名士兵。</p>
+                    <div class="story-meta"><a href="https://www.bbc.com" class="source-tag" target="_blank">BBC</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#9</span>
+                    <span class="heat-score">5.2</span>
+                    <div class="category-tag">大洋洲</div>
+                    <h3 class="story-title"><a href="#">澳大利亚计划建立悉尼犹太博物馆</a></h3>
+                    <p class="story-summary">新展览将纪念邦迪海滩大屠杀的遇难者。</p>
+                    <div class="story-meta"><a href="https://www.reuters.com" class="source-tag" target="_blank">路透社</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#10</span>
+                    <span class="heat-score">4.8</span>
+                    <div class="category-tag">非洲</div>
+                    <h3 class="story-title"><a href="#">肯尼亚主办气候融资峰会</a></h3>
+                    <p class="story-summary">非洲国家在内罗毕峰会上推动增加气候资金。</p>
+                    <div class="story-meta"><a href="https://www.theguardian.com" class="source-tag" target="_blank">卫报</a> | {{TIME_RELATIVE}}</div>
+                </article>
+            </div>
+        </div>
+
+        <!-- 时政 -->
+        <div id="politics" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">时政</h2>
+                <div class="section-meta">华盛顿及全球政治动态</div>
+            </div>
+            <div class="news-grid-list">
+                <article class="story-card">
+                    <span class="rank-badge">#1</span>
+                    <span class="heat-score">8.8</span>
+                    <div class="category-tag">中美关系</div>
+                    <h3 class="story-title"><a href="#">中国以科技应对美国压力</a></h3>
+                    <p class="story-summary">中国宣布军费增长7%及五年科技自主计划。</p>
+                    <div class="story-meta"><span class="source-tag">纽约时报</span> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#2</span>
+                    <span class="heat-score">6.2</span>
+                    <div class="category-tag">白宫</div>
+                    <h3 class="story-title"><a href="#">司法部称RFK Jr.疫苗政策权力「不可审查」</a></h3>
+                    <p class="story-summary">司法部律师表示卫生部长对疫苗拥有不受约束的权力。</p>
+                    <div class="story-meta"><a href="https://www.politico.com" class="source-tag" target="_blank">Politico</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#3</span>
+                    <span class="heat-score">6.0</span>
+                    <div class="category-tag">国会</div>
+                    <h3 class="story-title"><a href="#">参议院通过基础设施支出法案</a></h3>
+                    <p class="story-summary">两党支持通过1.2万亿美元道路桥梁建设方案。</p>
+                    <div class="story-meta"><a href="https://thehill.com" class="source-tag" target="_blank">The Hill</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#4</span>
+                    <span class="heat-score">5.8</span>
+                    <div class="category-tag">2026中期选举</div>
+                    <h3 class="story-title"><a href="#">共和党在最新民调中领先</a></h3>
+                    <p class="story-summary">新民调显示共和党在五个关键参议院席位领先。</p>
+                    <div class="story-meta"><a href="https://www.cnn.com" class="source-tag" target="_blank">CNN</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#5</span>
+                    <span class="heat-score">5.5</span>
+                    <div class="category-tag">最高法院</div>
+                    <h3 class="story-title"><a href="#">最高法院将审理重大选举法案</a></h3>
+                    <p class="story-summary">大法官将就州设定投票规则的权力作出裁决。</p>
+                    <div class="story-meta"><a href="https://www.reuters.com" class="source-tag" target="_blank">路透社</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#6</span>
+                    <span class="heat-score">5.2</span>
+                    <div class="category-tag">欧洲</div>
+                    <h3 class="story-title"><a href="#">法国政府面临不信任投票</a></h3>
+                    <p class="story-summary">反对党联合挑战马克龙养老金改革。</p>
+                    <div class="story-meta"><a href="https://www.bbc.com" class="source-tag" target="_blank">BBC</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#7</span>
+                    <span class="heat-score">4.8</span>
+                    <div class="category-tag">英国</div>
+                    <h3 class="story-title"><a href="#">工党公布新经济战略</a></h3>
+                    <p class="story-summary">斯塔默承诺「绿色工业革命」政策演讲。</p>
+                    <div class="story-meta"><a href="https://www.theguardian.com" class="source-tag" target="_blank">卫报</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#8</span>
+                    <span class="heat-score">4.5</span>
+                    <div class="category-tag">全球</div>
+                    <h3 class="story-title"><a href="#">G20领导人本周末将在巴西会晤</a></h3>
+                    <p class="story-summary">气候融资和债务减免是里约峰会的首要议程。</p>
+                    <div class="story-meta"><a href="https://www.reuters.com" class="source-tag" target="_blank">路透社</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#9</span>
+                    <span class="heat-score">4.2</span>
+                    <div class="category-tag">外交</div>
+                    <h3 class="story-title"><a href="#">美国特使抵达中东进行和平谈判</a></h3>
+                    <p class="story-summary">国务卿寻求缓和地区紧张局势。</p>
+                    <div class="story-meta"><span class="source-tag">纽约时报</span> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#10</span>
+                    <span class="heat-score">3.8</span>
+                    <div class="category-tag">地方</div>
+                    <h3 class="story-title"><a href="#">大城市市长竞选升温</a></h3>
+                    <p class="story-summary">犯罪和住房问题主导地方选举前的辩论。</p>
+                    <div class="story-meta"><a href="https://www.politico.com" class="source-tag" target="_blank">Politico</a> | {{TIME_RELATIVE}}</div>
+                </article>
+            </div>
+        </div>
+
+        <!-- 军事 -->
+        <div id="military" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">军事</h2>
+                <div class="section-meta">全球军事动态与国防新闻</div>
+            </div>
+            <div class="news-grid-list">
+                <article class="story-card">
+                    <span class="rank-badge">#1</span>
+                    <span class="heat-score">8.8</span>
+                    <div class="category-tag">国防预算</div>
+                    <h3 class="story-title"><a href="#">中国军费增长7%，加速科技自主以应对美国压力</a></h3>
+                    <p class="story-summary">中国宣布年度军费增长7%，并发布五年计划减少军事和工业对西方技术的依赖。该计划涉及量子计算、人工智能等关键技术领域。</p>
+                    <div class="story-meta"><span class="source-tag">纽约时报</span> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#2</span>
+                    <span class="heat-score">8.2</span>
+                    <div class="category-tag">中东冲突</div>
+                    <h3 class="story-title"><a href="#">以色列对德黑兰发动大规模空袭</a></h3>
+                    <p class="story-summary">以色列军方开始对伊朗首都发动大规模空袭，此前数小时已对黎巴嫩真主党据点实施打击。五角大楼表示伊朗报复性导弹袭击正在减少。</p>
+                    <div class="story-meta"><a href="https://www.bbc.com" class="source-tag" target="_blank">BBC</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#3</span>
+                    <span class="heat-score">7.5</span>
+                    <div class="category-tag">亚太防务</div>
+                    <h3 class="story-title"><a href="#">日韩举行历史性防务会谈，计划首次联合军演</a></h3>
+                    <p class="story-summary">日本与韩国在东京举行高级别防务会谈，就应对与朝鲜的紧张局势达成一致，计划年内举行首次联合军事演习。</p>
+                    <div class="story-meta"><a href="https://www.cnn.com" class="source-tag" target="_blank">CNN</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#4</span>
+                    <span class="heat-score">7.2</span>
+                    <div class="category-tag">武器装备</div>
+                    <h3 class="story-title"><a href="#">美国新型高超音速导弹试射成功</a></h3>
+                    <p class="story-summary">五角大楼宣布新型高超音速武器系统完成首次全程试射，速度超过5马赫，将改变未来战争形态。</p>
+                    <div class="story-meta"><a href="https://www.reuters.com" class="source-tag" target="_blank">路透社</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#5</span>
+                    <span class="heat-score">6.8</span>
+                    <div class="category-tag">海军</div>
+                    <h3 class="story-title"><a href="#">英国宣布建造新一代核潜艇计划</a></h3>
+                    <p class="story-summary">英国国防部公布价值300亿英镑的核潜艇更新计划，首艘预计2030年代服役，将取代现役"机敏"级潜艇。</p>
+                    <div class="story-meta"><a href="https://www.theguardian.com" class="source-tag" target="_blank">卫报</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#6</span>
+                    <span class="heat-score">6.5</span>
+                    <div class="category-tag">太空军事</div>
+                    <h3 class="story-title"><a href="#">美国太空军启动卫星防御计划</a></h3>
+                    <p class="story-summary">太空军宣布部署新一代导弹预警卫星系统，增强对高超音速武器的探测和跟踪能力。</p>
+                    <div class="story-meta"><a href="https://www.politico.com" class="source-tag" target="_blank">Politico</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#7</span>
+                    <span class="heat-score">6.2</span>
+                    <div class="category-tag">网络安全</div>
+                    <h3 class="story-title"><a href="#">北约举行大规模网络防御演习</a></h3>
+                    <p class="story-summary">「锁定盾牌」年度演习在爱沙尼亚举行，40个国家参与测试应对网络攻击的协调能力。</p>
+                    <div class="story-meta"><a href="https://www.bbc.com" class="source-tag" target="_blank">BBC</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#8</span>
+                    <span class="heat-score">5.8</span>
+                    <div class="category-tag">陆军</div>
+                    <h3 class="story-title"><a href="#">德国联邦国防军启动大规模改革</a></h3>
+                    <p class="story-summary">德国国防部长宣布1000亿欧元特别基金使用计划，用于采购新型坦克、战机和数字化装备。</p>
+                    <div class="story-meta"><a href="https://www.ft.com" class="source-tag" target="_blank">金融时报</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#9</span>
+                    <span class="heat-score">5.5</span>
+                    <div class="category-tag">军事技术</div>
+                    <h3 class="story-title"><a href="#">澳大利亚采购美国核潜艇首批交付</a></h3>
+                    <p class="story-summary">澳英美安全伙伴关系（AUKUS）框架下，首批美国"弗吉尼亚"级核潜艇将于2030年代初交付澳大利亚。</p>
+                    <div class="story-meta"><a href="https://www.reuters.com" class="source-tag" target="_blank">路透社</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#10</span>
+                    <span class="heat-score">5.2</span>
+                    <div class="category-tag">无人机</div>
+                    <h3 class="story-title"><a href="#">土耳其向乌克兰提供新型无人机</a></h3>
+                    <p class="story-summary">土耳其国防公司宣布向乌克兰交付最新型「旗手」TB3舰载无人机，具备卫星通信能力。</p>
+                    <div class="story-meta"><a href="https://www.ft.com" class="source-tag" target="_blank">金融时报</a> | {{TIME_RELATIVE}}</div>
+                </article>
+            </div>
+        </div>
+
+        <!-- 科技 -->
+        <div id="tech" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">科技</h2>
+                <div class="section-meta">最新科技、人工智能和创新动态</div>
+            </div>
+            <div class="news-grid-list">
+                <article class="story-card">
+                    <span class="rank-badge">#1</span>
+                    <span class="heat-score">8.2</span>
+                    <div class="category-tag">隐私</div>
+                    <h3 class="story-title"><a href="#">Meta员工观看Ray-Ban用户视频</a></h3>
+                    <p class="story-summary">外包员工查看包括浴室场景在内的私人录像。</p>
+                    <div class="story-meta"><a href="https://arstechnica.com" class="source-tag" target="_blank">Ars Technica</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#2</span>
+                    <span class="heat-score">7.8</span>
+                    <div class="category-tag">AI</div>
+                    <h3 class="story-title"><a href="#">OpenAI发布GPT-5.4新功能</a></h3>
+                    <p class="story-summary">最新模型可根据屏幕截图执行键盘和鼠标输入。</p>
+                    <div class="story-meta"><a href="https://arstechnica.com" class="source-tag" target="_blank">Ars Technica</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#3</span>
+                    <span class="heat-score">6.5</span>
+                    <div class="category-tag">游戏</div>
+                    <h3 class="story-title"><a href="#">微软下一代Xbox将运行PC游戏</a></h3>
+                    <p class="story-summary">Project Helix有望打破主机与PC之间的壁垒。</p>
+                    <div class="story-meta"><a href="https://www.theverge.com" class="source-tag" target="_blank">The Verge</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#4</span>
+                    <span class="heat-score">6.2</span>
+                    <div class="category-tag">云</div>
+                    <h3 class="story-title"><a href="#">亚马逊遭遇重大服务中断</a></h3>
+                    <p class="story-summary">超过2万用户报告购物和结账问题。</p>
+                    <div class="story-meta"><a href="https://techcrunch.com" class="source-tag" target="_blank">TechCrunch</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#5</span>
+                    <span class="heat-score">5.8</span>
+                    <div class="category-tag">硬件</div>
+                    <h3 class="story-title"><a href="#">苹果发布MacBook M4芯片</a></h3>
+                    <p class="story-summary">新处理器承诺比M3性能提升40%。</p>
+                    <div class="story-meta"><a href="https://www.wired.com" class="source-tag" target="_blank">Wired</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#6</span>
+                    <span class="heat-score">5.5</span>
+                    <div class="category-tag">电动车</div>
+                    <h3 class="story-title"><a href="#">特斯拉发布新电池技术</a></h3>
+                    <p class="story-summary">固态电池有望为Model S提供500英里续航。</p>
+                    <div class="story-meta"><a href="https://www.reuters.com" class="source-tag" target="_blank">路透社</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#7</span>
+                    <span class="heat-score">5.2</span>
+                    <div class="category-tag">安全</div>
+                    <h3 class="story-title"><a href="#">大规模网络攻击瞄准医疗系统</a></h3>
+                    <p class="story-summary">勒索软件攻击影响北美200家医院。</p>
+                    <div class="story-meta"><a href="https://arstechnica.com" class="source-tag" target="_blank">Ars Technica</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#8</span>
+                    <span class="heat-score">4.8</span>
+                    <div class="category-tag">太空</div>
+                    <h3 class="story-title"><a href="#">SpaceX发射新卫星星座</a></h3>
+                    <p class="story-summary">星链扩展计划目标2027年实现全球互联网覆盖。</p>
+                    <div class="story-meta"><a href="https://techcrunch.com" class="source-tag" target="_blank">TechCrunch</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#9</span>
+                    <span class="heat-score">4.5</span>
+                    <div class="category-tag">监管</div>
+                    <h3 class="story-title"><a href="#">欧盟通过新AI安全法规</a></h3>
+                    <p class="story-summary">里程碑式法律为AI开发和部署设定严格规则。</p>
+                    <div class="story-meta"><a href="https://www.theverge.com" class="source-tag" target="_blank">The Verge</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#10</span>
+                    <span class="heat-score">4.2</span>
+                    <div class="category-tag">社交媒体</div>
+                    <h3 class="story-title"><a href="#">TikTok测试新购物功能</a></h3>
+                    <p class="story-summary">社交电商发力与亚马逊和Instagram竞争。</p>
+                    <div class="story-meta"><a href="https://www.wired.com" class="source-tag" target="_blank">Wired</a> | {{TIME_RELATIVE}}</div>
+                </article>
+            </div>
+        </div>
+
+        <!-- 商业 -->
+        <div id="business" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">商业</h2>
+                <div class="section-meta">市场、金融和企业新闻</div>
+            </div>
+            <div class="news-grid-list">
+                <article class="story-card">
+                    <span class="rank-badge">#1</span>
+                    <span class="heat-score">7.2</span>
+                    <div class="category-tag">电商</div>
+                    <h3 class="story-title"><a href="#">亚马逊服务中断影响数千用户</a></h3>
+                    <p class="story-summary">重大中断扰乱全球用户购物和结账。</p>
+                    <div class="story-meta"><a href="https://www.reuters.com" class="source-tag" target="_blank">路透社</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#2</span>
+                    <span class="heat-score">6.8</span>
+                    <div class="category-tag">市场</div>
+                    <h3 class="story-title"><a href="#">全球市场因复苏希望而上涨</a></h3>
+                    <p class="story-summary">标普500和道指创历史高位，通胀担忧缓解。</p>
+                    <div class="story-meta"><a href="https://www.wsj.com" class="source-tag" target="_blank">华尔街日报</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#3</span>
+                    <span class="heat-score">6.5</span>
+                    <div class="category-tag">银行</div>
+                    <h3 class="story-title"><a href="#">美联储暗示今年可能降息</a></h3>
+                    <p class="story-summary">央行会议纪要显示2026年可能降息三次。</p>
+                    <div class="story-meta"><a href="https://www.ft.com" class="source-tag" target="_blank">金融时报</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#4</span>
+                    <span class="heat-score">6.2</span>
+                    <div class="category-tag">能源</div>
+                    <h3 class="story-title"><a href="#">中东紧张局势推高油价</a></h3>
+                    <p class="story-summary">布伦特原油突破85美元，冲突引发供应担忧。</p>
+                    <div class="story-meta"><a href="https://www.reuters.com" class="source-tag" target="_blank">路透社</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#5</span>
+                    <span class="heat-score">5.8</span>
+                    <div class="category-tag">科技股</div>
+                    <h3 class="story-title"><a href="#">英伟达成为全球市值最高公司</a></h3>
+                    <p class="story-summary">AI芯片需求推动市值突破3万亿美元。</p>
+                    <div class="story-meta"><a href="https://www.bloomberg.com" class="source-tag" target="_blank">彭博</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#6</span>
+                    <span class="heat-score">5.5</span>
+                    <div class="category-tag">并购</div>
+                    <h3 class="story-title"><a href="#">制药行业宣布重大合并</a></h3>
+                    <p class="story-summary">500亿美元交易将打造全球最大制药公司。</p>
+                    <div class="story-meta"><a href="https://www.ft.com" class="source-tag" target="_blank">金融时报</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#7</span>
+                    <span class="heat-score">5.2</span>
+                    <div class="category-tag">房地产</div>
+                    <h3 class="story-title"><a href="#">房市显现复苏迹象</a></h3>
+                    <p class="story-summary">抵押贷款申请连续第三个月上升。</p>
+                    <div class="story-meta"><a href="https://www.wsj.com" class="source-tag" target="_blank">华尔街日报</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#8</span>
+                    <span class="heat-score">4.8</span>
+                    <div class="category-tag">加密货币</div>
+                    <h3 class="story-title"><a href="#">比特币ETF流入创新高</a></h3>
+                    <p class="story-summary">机构投资者向加密基金投入20亿美元。</p>
+                    <div class="story-meta"><a href="https://www.reuters.com" class="source-tag" target="_blank">路透社</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#9</span>
+                    <span class="heat-score">4.5</span>
+                    <div class="category-tag">航空</div>
+                    <h3 class="story-title"><a href="#">波音推迟新飞机项目</a></h3>
+                    <p class="story-summary">生产挫折将发布推迟至2027年，正值安全审查期间。</p>
+                    <div class="story-meta"><a href="https://www.ft.com" class="source-tag" target="_blank">金融时报</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#10</span>
+                    <span class="heat-score">4.2</span>
+                    <div class="category-tag">零售</div>
+                    <h3 class="story-title"><a href="#">消费者支出超预期</a></h3>
+                    <p class="story-summary">2月零售销售增长0.8%，超出预期。</p>
+                    <div class="story-meta"><a href="https://www.wsj.com" class="source-tag" target="_blank">华尔街日报</a> | {{TIME_RELATIVE}}</div>
+                </article>
+            </div>
+        </div>
+
+        <!-- 健康 -->
+        <div id="health" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">健康</h2>
+                <div class="section-meta">医学研究、公共卫生和健康</div>
+            </div>
+            <div class="news-grid-list">
+                <article class="story-card">
+                    <span class="rank-badge">#1</span>
+                    <span class="heat-score">7.2</span>
+                    <div class="category-tag">公共卫生</div>
+                    <h3 class="story-title"><a href="#">司法部称RFK Jr.疫苗权力不可审查</a></h3>
+                    <p class="story-summary">法院被告知卫生部长对疫苗政策拥有不受约束的权力。</p>
+                    <div class="story-meta"><a href="https://www.medpagetoday.com" class="source-tag" target="_blank">MedPage</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#2</span>
+                    <span class="heat-score">6.5</span>
+                    <div class="category-tag">研究</div>
+                    <h3 class="story-title"><a href="#">新阿尔茨海默药物试验显示希望</a></h3>
+                    <p class="story-summary">实验性治疗使认知能力下降减缓35%。</p>
+                    <div class="story-meta"><a href="https://www.who.int" class="source-tag" target="_blank">WHO</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#3</span>
+                    <span class="heat-score">6.2</span>
+                    <div class="category-tag">全球健康</div>
+                    <h3 class="story-title"><a href="#">美国和欧洲麻疹病例上升</a></h3>
+                    <p class="story-summary">疫苗接种率下降导致15个国家爆发疫情。</p>
+                    <div class="story-meta"><a href="https://www.cdc.gov" class="source-tag" target="_blank">CDC</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#4</span>
+                    <span class="heat-score">5.8</span>
+                    <div class="category-tag">心理健康</div>
+                    <h3 class="story-title"><a href="#">心理健康应用面临监管审查</a></h3>
+                    <p class="story-summary">FDA提议为数字疗法制定新指导方针。</p>
+                    <div class="story-meta"><a href="https://www.medpagetoday.com" class="source-tag" target="_blank">MedPage</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#5</span>
+                    <span class="heat-score">5.5</span>
+                    <div class="category-tag">癌症</div>
+                    <h3 class="story-title"><a href="#">早期癌症检测取得突破</a></h3>
+                    <p class="story-summary">血液检测可在症状出现前识别50种癌症。</p>
+                    <div class="story-meta"><a href="https://www.nature.com" class="source-tag" target="_blank">自然</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#6</span>
+                    <span class="heat-score">5.2</span>
+                    <div class="category-tag">营养</div>
+                    <h3 class="story-title"><a href="#">研究将加工食品与抑郁联系起来</a></h3>
+                    <p class="story-summary">高度加工食品消费增加23%的风险。</p>
+                    <div class="story-meta"><a href="https://www.who.int" class="source-tag" target="_blank">WHO</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#7</span>
+                    <span class="heat-score">4.8</span>
+                    <div class="category-tag">传染病</div>
+                    <h3 class="story-title"><a href="#">美国牛群中发现禽流感</a></h3>
+                    <p class="story-summary">官员监控病毒向 cattle 蔓延的情况。</p>
+                    <div class="story-meta"><a href="https://www.cdc.gov" class="source-tag" target="_blank">CDC</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#8</span>
+                    <span class="heat-score">4.5</span>
+                    <div class="category-tag">健身</div>
+                    <h3 class="story-title"><a href="#">WHO更新运动指南</a></h3>
+                    <p class="story-summary">新建议包括每周两次力量训练。</p>
+                    <div class="story-meta"><a href="https://www.who.int" class="source-tag" target="_blank">WHO</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#9</span>
+                    <span class="heat-score">4.2</span>
+                    <div class="category-tag">医疗</div>
+                    <h3 class="story-title"><a href="#">医院网络攻击泄露患者数据</a></h3>
+                    <p class="story-summary">勒索软件攻击影响200万患者记录。</p>
+                    <div class="story-meta"><a href="https://www.medpagetoday.com" class="source-tag" target="_blank">MedPage</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#10</span>
+                    <span class="heat-score">3.8</span>
+                    <div class="category-tag">儿科</div>
+                    <h3 class="story-title"><a href="#">儿童屏幕时间新指南</a></h3>
+                    <p class="story-summary">儿科医生修订数字设备使用建议。</p>
+                    <div class="story-meta"><a href="https://www.aap.org" class="source-tag" target="_blank">AAP</a> | {{TIME_RELATIVE}}</div>
+                </article>
+            </div>
+        </div>
+
+        <!-- 科学 -->
+        <div id="science" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">科学</h2>
+                <div class="section-meta">发现、研究和自然界</div>
+            </div>
+            <div class="news-grid-list">
+                <article class="story-card">
+                    <span class="rank-badge">#1</span>
+                    <span class="heat-score">6.8</span>
+                    <div class="category-tag">气候</div>
+                    <h3 class="story-title"><a href="#">冰盖融化速度超预测</a></h3>
+                    <p class="story-summary">新卫星数据显示格陵兰岛正以创纪录速度流失冰层。</p>
+                    <div class="story-meta"><a href="https://www.nature.com" class="source-tag" target="_blank">自然</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#2</span>
+                    <span class="heat-score">6.5</span>
+                    <div class="category-tag">天文</div>
+                    <h3 class="story-title"><a href="#">韦伯望远镜发现远古星系</a></h3>
+                    <p class="story-summary">观测显示星系在宇宙大爆炸后仅3亿年形成。</p>
+                    <div class="story-meta"><a href="https://www.science.org" class="source-tag" target="_blank">科学</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#3</span>
+                    <span class="heat-score">6.2</span>
+                    <div class="category-tag">物理</div>
+                    <h3 class="story-title"><a href="#">量子计算机达成新里程碑</a></h3>
+                    <p class="story-summary">谷歌处理器在几秒内完成超级计算机需要数年才能完成的计算。</p>
+                    <div class="story-meta"><a href="https://www.nature.com" class="source-tag" target="_blank">自然</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#4</span>
+                    <span class="heat-score">5.8</span>
+                    <div class="category-tag">生物</div>
+                    <h3 class="story-title"><a href="#">科学家创建合成人胚胎</a></h3>
+                    <p class="story-summary">实验室培养的模型引发关于研究边界的伦理问题。</p>
+                    <div class="story-meta"><a href="https://www.science.org" class="source-tag" target="_blank">科学</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#5</span>
+                    <span class="heat-score">5.5</span>
+                    <div class="category-tag">考古</div>
+                    <h3 class="story-title"><a href="#">亚马逊雨林发现古城</a></h3>
+                    <p class="story-summary">激光雷达技术揭示隐藏数百年的 sprawling 文明。</p>
+                    <div class="story-meta"><a href="https://www.nature.com" class="source-tag" target="_blank">自然</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#6</span>
+                    <span class="heat-score">5.2</span>
+                    <div class="category-tag">海洋</div>
+                    <h3 class="story-title"><a href="#">深海探险发现新物种</a></h3>
+                    <p class="story-summary">太平洋海沟中记录了100多种 previously unknown 生物。</p>
+                    <div class="story-meta"><a href="https://www.science.org" class="source-tag" target="_blank">科学</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#7</span>
+                    <span class="heat-score">4.8</span>
+                    <div class="category-tag">能源</div>
+                    <h3 class="story-title"><a href="#">聚变反应堆维持等离子体创纪录时间</a></h3>
+                    <p class="story-summary">韩国设施在高温下维持反应100秒。</p>
+                    <div class="story-meta"><a href="https://www.nature.com" class="source-tag" target="_blank">自然</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#8</span>
+                    <span class="heat-score">4.5</span>
+                    <div class="category-tag">神经科学</div>
+                    <h3 class="story-title"><a href="#">脑图谱项目发布新数据</a></h3>
+                    <p class="story-summary">详细的神经连接图谱为认知提供 insights。</p>
+                    <div class="story-meta"><a href="https://www.science.org" class="source-tag" target="_blank">科学</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#9</span>
+                    <span class="heat-score">4.2</span>
+                    <div class="category-tag">古生物</div>
+                    <h3 class="story-title"><a href="#">研究表明霸王龙可能有羽毛</a></h3>
+                    <p class="story-summary">化石证据挑战恐龙外观的传统观点。</p>
+                    <div class="story-meta"><a href="https://www.nature.com" class="source-tag" target="_blank">自然</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#10</span>
+                    <span class="heat-score">3.8</span>
+                    <div class="category-tag">基因</div>
+                    <h3 class="story-title"><a href="#">CRISPR治疗显示长期益处</a></h3>
+                    <p class="story-summary">五年随访证实基因治疗的持久效果。</p>
+                    <div class="story-meta"><a href="https://www.science.org" class="source-tag" target="_blank">科学</a> | {{TIME_RELATIVE}}</div>
+                </article>
+            </div>
+        </div>
+
+        <!-- 中国 -->
+        <div id="china" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">中国</h2>
+                <div class="section-meta">中国国内重要新闻与深度报道</div>
+            </div>
+            <div class="news-grid-list">
+                <article class="story-card">
+                    <span class="rank-badge">#1</span>
+                    <span class="heat-score">8.8</span>
+                    <div class="category-tag">政策</div>
+                    <h3 class="story-title"><a href="#">中国宣布新一轮经济刺激计划</a></h3>
+                    <p class="story-summary">国务院发布一揽子政策措施，重点支持科技创新和绿色转型。</p>
+                    <div class="story-meta"><span class="source-tag">新华社</span> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#2</span>
+                    <span class="heat-score">7.5</span>
+                    <div class="category-tag">科技</div>
+                    <h3 class="story-title"><a href="#">国产芯片取得重大突破</a></h3>
+                    <p class="story-summary">中芯国际宣布新一代制程工艺进入量产阶段。</p>
+                    <div class="story-meta"><a href="http://www.xinhuanet.com" class="source-tag" target="_blank">新华网</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#3</span>
+                    <span class="heat-score">7.2</span>
+                    <div class="category-tag">社会</div>
+                    <h3 class="story-title"><a href="#">全国两会热点议题盘点</a></h3>
+                    <p class="story-summary">教育、医疗、住房等民生话题成为代表委员关注焦点。</p>
+                    <div class="story-meta"><span class="source-tag">新华社</span> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#4</span>
+                    <span class="heat-score">6.8</span>
+                    <div class="category-tag">经济</div>
+                    <h3 class="story-title"><a href="#">跨境电商进出口额创新高</a></h3>
+                    <p class="story-summary">海关数据显示跨境电商成为外贸增长新引擎。</p>
+                    <div class="story-meta"><a href="http://www.xinhuanet.com" class="source-tag" target="_blank">新华网</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#5</span>
+                    <span class="heat-score">6.5</span>
+                    <div class="category-tag">环保</div>
+                    <h3 class="story-title"><a href="#">长江十年禁渔成效显著</a></h3>
+                    <p class="story-summary">生物多样性监测显示鱼类资源明显恢复。</p>
+                    <div class="story-meta"><span class="source-tag">新华社</span> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#6</span>
+                    <span class="heat-score">6.2</span>
+                    <div class="category-tag">文化</div>
+                    <h3 class="story-title"><a href="#">春节档电影票房创历史新高</a></h3>
+                    <p class="story-summary">国产影片表现亮眼，观影人次突破纪录。</p>
+                    <div class="story-meta"><a href="http://www.xinhuanet.com" class="source-tag" target="_blank">新华网</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#7</span>
+                    <span class="heat-score">5.8</span>
+                    <div class="category-tag">基建</div>
+                    <h3 class="story-title"><a href="#">新一批高铁线路开通运营</a></h3>
+                    <p class="story-summary">中西部地区交通网络进一步完善。</p>
+                    <div class="story-meta"><span class="source-tag">新华社</span> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#8</span>
+                    <span class="heat-score">5.5</span>
+                    <div class="category-tag">农业</div>
+                    <h3 class="story-title"><a href="#">粮食生产实现二十连丰</a></h3>
+                    <p class="story-summary">全年粮食产量再创新高，保障能力持续增强。</p>
+                    <div class="story-meta"><a href="http://www.xinhuanet.com" class="source-tag" target="_blank">新华网</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#9</span>
+                    <span class="heat-score">5.2</span>
+                    <div class="category-tag">航天</div>
+                    <h3 class="story-title"><a href="#">空间站完成新一轮科学实验</a></h3>
+                    <p class="story-summary">多项实验取得重要进展，推动空间科学发展。</p>
+                    <div class="story-meta"><span class="source-tag">新华社</span> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#10</span>
+                    <span class="heat-score">4.8</span>
+                    <div class="category-tag">体育</div>
+                    <h3 class="story-title"><a href="#">中国队在世锦赛斩获多枚金牌</a></h3>
+                    <p class="story-summary">运动员们在多个项目上展现出色竞技状态。</p>
+                    <div class="story-meta"><a href="http://www.xinhuanet.com" class="source-tag" target="_blank">新华网</a> | {{TIME_RELATIVE}}</div>
+                </article>
+            </div>
+        </div>
+
+        <!-- 体育 -->
+        <div id="sports" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">体育</h2>
+                <div class="section-meta">比分、亮点和体育新闻</div>
+            </div>
+            <div class="news-grid-list">
+                <article class="story-card">
+                    <span class="rank-badge">#1</span>
+                    <span class="heat-score">6.5</span>
+                    <div class="category-tag">足球</div>
+                    <h3 class="story-title"><a href="#">欧冠四分之一决赛名单确定</a></h3>
+                    <p class="story-summary">激烈的比赛决定了淘汰赛的八强球队。</p>
+                    <div class="story-meta"><a href="https://www.espn.com" class="source-tag" target="_blank">ESPN</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#2</span>
+                    <span class="heat-score">6.2</span>
+                    <div class="category-tag">NBA</div>
+                    <h3 class="story-title"><a href="#">湖人获胜锁定季后赛席位</a></h3>
+                    <p class="story-summary">勒布朗·詹姆斯在对勇士的关键胜利中砍下40分。</p>
+                    <div class="story-meta"><a href="https://www.espn.com" class="source-tag" target="_blank">ESPN</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#3</span>
+                    <span class="heat-score">5.8</span>
+                    <div class="category-tag">网球</div>
+                    <h3 class="story-title"><a href="#">德约科维奇赢得第24个大满贯</a></h3>
+                    <p class="story-summary">塞尔维亚球星在五盘激战中夺得澳网冠军。</p>
+                    <div class="story-meta"><a href="https://www.bbc.com/sport" class="source-tag" target="_blank">BBC体育</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#4</span>
+                    <span class="heat-score">5.5</span>
+                    <div class="category-tag">板球</div>
+                    <h3 class="story-title"><a href="#">英格兰在测试赛中击败澳大利亚</a></h3>
+                    <p class="story-summary">在Lord's的历史性胜利让Ashes希望继续。</p>
+                    <div class="story-meta"><a href="https://www.theguardian.com" class="source-tag" target="_blank">卫报</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#5</span>
+                    <span class="heat-score">5.2</span>
+                    <div class="category-tag">F1</div>
+                    <h3 class="story-title"><a href="#">维斯塔潘在巴林站夺得杆位</a></h3>
+                    <p class="story-summary">红牛车手在赛季揭幕战排位赛中统治全场。</p>
+                    <div class="story-meta"><a href="https://www.bbc.com/sport" class="source-tag" target="_blank">BBC体育</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#6</span>
+                    <span class="heat-score">4.8</span>
+                    <div class="category-tag">高尔夫</div>
+                    <h3 class="story-title"><a href="#">麦克罗伊在大师赛领跑</a></h3>
+                    <p class="story-summary">北爱尔兰人打出66杆，以一杆优势进入周末。</p>
+                    <div class="story-meta"><a href="https://www.espn.com" class="source-tag" target="_blank">ESPN</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#7</span>
+                    <span class="heat-score">4.5</span>
+                    <div class="category-tag">NFL</div>
+                    <h3 class="story-title"><a href="#">自由球员市场 frenzy 继续</a></h3>
+                    <p class="story-summary">超级碗MVP与新球队签下创纪录合同。</p>
+                    <div class="story-meta"><a href="https://www.espn.com" class="source-tag" target="_blank">ESPN</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#8</span>
+                    <span class="heat-score">4.2</span>
+                    <div class="category-tag">田径</div>
+                    <h3 class="story-title"><a href="#">百米短跑世界纪录被打破</a></h3>
+                    <p class="story-summary">牙买加选手在钻石联赛跑出9.58秒。</p>
+                    <div class="story-meta"><a href="https://www.theguardian.com" class="source-tag" target="_blank">卫报</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#9</span>
+                    <span class="heat-score">3.8</span>
+                    <div class="category-tag">棒球</div>
+                    <h3 class="story-title"><a href="#">MLB赛季以历史性比赛开幕</a></h3>
+                    <p class="story-summary">道奇和教士在韩国首尔进行首场海外开幕战。</p>
+                    <div class="story-meta"><a href="https://www.espn.com" class="source-tag" target="_blank">ESPN</a> | {{TIME_RELATIVE}}</div>
+                </article>
+                <article class="story-card">
+                    <span class="rank-badge">#10</span>
+                    <span class="heat-score">3.5</span>
+                    <div class="category-tag">奥运</div>
+                    <h3 class="story-title"><a href="#">巴黎2024筹备进入最后阶段</a></h3>
+                    <p class="story-summary">组织者对持续的安全担忧保持信心。</p>
+                    <div class="story-meta"><a href="https://www.bbc.com/sport" class="source-tag" target="_blank">BBC体育</a> | {{TIME_RELATIVE}}</div>
+                </article>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>每日新闻聚合 | <a href="#" class="sources-link" id="sourcesLink">精选55+信源</a> | 更新时间：{{UPDATE_TIME}}</p>
+        </footer>
+    </div>
+
+    <!-- 右侧抽屉 -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <div class="drawer" id="sourcesDrawer">
+        <div class="drawer-header">
+            <h3 class="drawer-title">RSS 信源列表</h3>
+            <button class="drawer-close" id="drawerClose">&times;</button>
+        </div>
+        <div class="drawer-content">
+            <div class="source-category">
+                <h4 class="source-cat-title">国际 (10)</h4>
+                <ul class="source-list">
+                    <li>BBC News - 国际</li>
+                    <li>BBC News - 英国</li>
+                    <li>纽约时报 - 国际</li>
+                    <li>路透社 - 国际</li>
+                    <li>卫报 - 国际</li>
+                    <li>CNN - 国际</li>
+                    <li>半岛电视台</li>
+                    <li>新华网 - 国际</li>
+                    <li>新华网 - 文化</li>
+                    <li>新华网 - 娱乐</li>
+                </ul>
+            </div>
+            <div class="source-category">
+                <h4 class="source-cat-title">中国 (8)</h4>
+                <ul class="source-list">
+                    <li>新华网 - 中国</li>
+                    <li>新华网 - 时政</li>
+                    <li>新华网 - 财经</li>
+                    <li>新华网 - 科技</li>
+                    <li>新华网 - 体育</li>
+                    <li>新华网 - 健康</li>
+                    <li>人民日报</li>
+                    <li>解放军报</li>
+                </ul>
+            </div>
+            <div class="source-category">
+                <h4 class="source-cat-title">时政 (5)</h4>
+                <ul class="source-list">
+                    <li>BBC News - 时政</li>
+                    <li>纽约时报 - 时政</li>
+                    <li>卫报 - 时政</li>
+                    <li>Politico</li>
+                    <li>The Hill</li>
+                    <li>新华网 - 中国</li>
+                    <li>新华网 - 时政</li>
+                </ul>
+            </div>
+            <div class="source-category">
+                <h4 class="source-cat-title">军事 (5)</h4>
+                <ul class="source-list">
+                    <li>解放军报</li>
+                    <li>新华网 - 军事</li>
+                    <li>Defense News</li>
+                    <li>Military.com</li>
+                    <li>Task & Purpose</li>
+                </ul>
+            </div>
+            <div class="source-category">
+                <h4 class="source-cat-title">科技 (8)</h4>
+                <ul class="source-list">
+                    <li>BBC News - 科技</li>
+                    <li>纽约时报 - 科技</li>
+                    <li>Ars Technica</li>
+                    <li>路透社 - 科技</li>
+                    <li>卫报 - 科技</li>
+                    <li>TechCrunch</li>
+                    <li>The Verge</li>
+                    <li>Wired</li>
+                    <li>新华网 - 科技</li>
+                </ul>
+            </div>
+            <div class="source-category">
+                <h4 class="source-cat-title">商业 (6)</h4>
+                <ul class="source-list">
+                    <li>BBC News - 商业</li>
+                    <li>纽约时报 - 商业</li>
+                    <li>路透社 - 商业</li>
+                    <li>卫报 - 商业</li>
+                    <li>金融时报</li>
+                    <li>华尔街日报</li>
+                    <li>新华网 - 财经</li>
+                </ul>
+            </div>
+            <div class="source-category">
+                <h4 class="source-cat-title">健康 (4)</h4>
+                <ul class="source-list">
+                    <li>BBC News - 健康</li>
+                    <li>纽约时报 - 健康</li>
+                    <li>MedPage Today</li>
+                    <li>WHO</li>
+                    <li>新华网 - 健康</li>
+                </ul>
+            </div>
+            <div class="source-category">
+                <h4 class="source-cat-title">科学 (4)</h4>
+                <ul class="source-list">
+                    <li>BBC News - 科学</li>
+                    <li>纽约时报 - 科学</li>
+                    <li>卫报 - 科学</li>
+                    <li>Nature</li>
+                    <li>Science Magazine</li>
+                </ul>
+            </div>
+            <div class="source-category">
+                <h4 class="source-cat-title">体育 (3)</h4>
+                <ul class="source-list">
+                    <li>BBC News - 体育</li>
+                    <li>纽约时报 - 体育</li>
+                    <li>卫报 - 体育</li>
+                    <li>ESPN</li>
+                    <li>新华网 - 体育</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab切换
+        document.querySelectorAll('.tab-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // 抽屉功能
+        const sourcesLink = document.getElementById('sourcesLink');
+        const sourcesDrawer = document.getElementById('sourcesDrawer');
+        const drawerOverlay = document.getElementById('drawerOverlay');
+        const drawerClose = document.getElementById('drawerClose');
+
+        function openDrawer() {
+            sourcesDrawer.classList.add('active');
+            drawerOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDrawer() {
+            sourcesDrawer.classList.remove('active');
+            drawerOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        sourcesLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            openDrawer();
+        });
+
+        drawerClose.addEventListener('click', closeDrawer);
+        drawerOverlay.addEventListener('click', closeDrawer);
+
+        // ESC键关闭抽屉
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && sourcesDrawer.classList.contains('active')) {
+                closeDrawer();
+            }
+        });
+    </script>
+</body>
+</html>

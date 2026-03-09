@@ -1,0 +1,269 @@
+{
+  "rss": [
+    {
+      "title": "BBC News - 国际",
+      "url": "https://feeds.bbci.co.uk/news/world/rss.xml",
+      "category": "国际"
+    },
+    {
+      "title": "BBC News - 英国",
+      "url": "https://feeds.bbci.co.uk/news/uk/rss.xml",
+      "category": "国际"
+    },
+    {
+      "title": "BBC News - 时政",
+      "url": "https://feeds.bbci.co.uk/news/politics/rss.xml",
+      "category": "时政"
+    },
+    {
+      "title": "BBC News - 科技",
+      "url": "https://feeds.bbci.co.uk/news/technology/rss.xml",
+      "category": "科技"
+    },
+    {
+      "title": "BBC News - 商业",
+      "url": "https://feeds.bbci.co.uk/news/business/rss.xml",
+      "category": "商业"
+    },
+    {
+      "title": "BBC News - 健康",
+      "url": "https://feeds.bbci.co.uk/news/health/rss.xml",
+      "category": "健康"
+    },
+    {
+      "title": "BBC News - 科学",
+      "url": "https://feeds.bbci.co.uk/news/science_and_environment/rss.xml",
+      "category": "科学"
+    },
+    {
+      "title": "BBC News - 体育",
+      "url": "https://feeds.bbci.co.uk/sport/rss.xml",
+      "category": "体育"
+    },
+    {
+      "title": "纽约时报 - 国际",
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+      "category": "国际"
+    },
+    {
+      "title": "纽约时报 - 时政",
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/Politics.xml",
+      "category": "时政"
+    },
+    {
+      "title": "纽约时报 - 科技",
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",
+      "category": "科技"
+    },
+    {
+      "title": "纽约时报 - 商业",
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml",
+      "category": "商业"
+    },
+    {
+      "title": "纽约时报 - 健康",
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/Health.xml",
+      "category": "健康"
+    },
+    {
+      "title": "纽约时报 - 科学",
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/Science.xml",
+      "category": "科学"
+    },
+    {
+      "title": "纽约时报 - 体育",
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/Sports.xml",
+      "category": "体育"
+    },
+    {
+      "title": "Ars Technica",
+      "url": "https://feeds.arstechnica.com/arstechnica/index",
+      "category": "科技"
+    },
+    {
+      "title": "路透社 - 国际",
+      "url": "https://www.reutersagency.com/feed/?taxonomy=markets&post_type=reuters-best",
+      "category": "国际"
+    },
+    {
+      "title": "路透社 - 科技",
+      "url": "https://www.reutersagency.com/feed/?taxonomy=technology&post_type=reuters-best",
+      "category": "科技"
+    },
+    {
+      "title": "路透社 - 商业",
+      "url": "https://www.reutersagency.com/feed/?taxonomy=business-finance&post_type=reuters-best",
+      "category": "商业"
+    },
+    {
+      "title": "卫报 - 国际",
+      "url": "https://www.theguardian.com/world/rss",
+      "category": "国际"
+    },
+    {
+      "title": "卫报 - 时政",
+      "url": "https://www.theguardian.com/politics/rss",
+      "category": "时政"
+    },
+    {
+      "title": "卫报 - 科技",
+      "url": "https://www.theguardian.com/technology/rss",
+      "category": "科技"
+    },
+    {
+      "title": "卫报 - 商业",
+      "url": "https://www.theguardian.com/business/rss",
+      "category": "商业"
+    },
+    {
+      "title": "卫报 - 科学",
+      "url": "https://www.theguardian.com/science/rss",
+      "category": "科学"
+    },
+    {
+      "title": "卫报 - 体育",
+      "url": "https://www.theguardian.com/sport/rss",
+      "category": "体育"
+    },
+    {
+      "title": "ESPN",
+      "url": "https://www.espn.com/espn/rss/news",
+      "category": "体育"
+    },
+    {
+      "title": "Nature",
+      "url": "https://www.nature.com/nature.rss",
+      "category": "科学"
+    },
+    {
+      "title": "Science Magazine",
+      "url": "https://www.science.org/rss/news_current.xml",
+      "category": "科学"
+    },
+    {
+      "title": "MedPage Today",
+      "url": "https://www.medpagetoday.com/rss/headlines.xml",
+      "category": "健康"
+    },
+    {
+      "title": "WHO",
+      "url": "https://www.who.int/rss-feeds/news-english.xml",
+      "category": "健康"
+    },
+    {
+      "title": "TechCrunch",
+      "url": "https://techcrunch.com/feed/",
+      "category": "科技"
+    },
+    {
+      "title": "The Verge",
+      "url": "https://www.theverge.com/rss/index.xml",
+      "category": "科技"
+    },
+    {
+      "title": "Wired",
+      "url": "https://www.wired.com/feed/rss",
+      "category": "科技"
+    },
+    {
+      "title": "Politico",
+      "url": "https://www.politico.com/rss/politics08.xml",
+      "category": "时政"
+    },
+    {
+      "title": "The Hill",
+      "url": "https://thehill.com/rss/syndicator/19110",
+      "category": "时政"
+    },
+    {
+      "title": "金融时报",
+      "url": "https://www.ft.com/rss/home/uk",
+      "category": "商业"
+    },
+    {
+      "title": "华尔街日报",
+      "url": "https://feeds.a.dj.com/rss/RSSMarketsMain.xml",
+      "category": "商业"
+    },
+    {
+      "title": "CNN - 国际",
+      "url": "https://rss.cnn.com/rss/edition_world.rss",
+      "category": "国际"
+    },
+    {
+      "title": "半岛电视台",
+      "url": "https://www.aljazeera.com/xml/rss/all.xml",
+      "category": "国际"
+    },
+    {
+      "title": "新华网 - 国际",
+      "url": "https://www.xinhuanet.com/english/rss/worldrss.xml",
+      "category": "国际"
+    },
+    {
+      "title": "新华网 - 中国",
+      "url": "https://www.xinhuanet.com/english/rss/chinarss.xml",
+      "category": "时政"
+    },
+    {
+      "title": "新华网 - 时政",
+      "url": "https://www.xinhuanet.com/english/rss/politicsrss.xml",
+      "category": "时政"
+    },
+    {
+      "title": "新华网 - 财经",
+      "url": "https://www.xinhuanet.com/english/rss/businessrss.xml",
+      "category": "商业"
+    },
+    {
+      "title": "新华网 - 科技",
+      "url": "https://www.xinhuanet.com/english/rss/sciencerss.xml",
+      "category": "科技"
+    },
+    {
+      "title": "新华网 - 体育",
+      "url": "https://www.xinhuanet.com/english/rss/sportsrss.xml",
+      "category": "体育"
+    },
+    {
+      "title": "新华网 - 健康",
+      "url": "https://www.xinhuanet.com/english/rss/healthrss.xml",
+      "category": "健康"
+    },
+    {
+      "title": "新华网 - 文化",
+      "url": "https://www.xinhuanet.com/english/rss/culturerss.xml",
+      "category": "国际"
+    },
+    {
+      "title": "新华网 - 娱乐",
+      "url": "https://www.xinhuanet.com/english/rss/entertainmentrss.xml",
+      "category": "国际"
+    },
+    {
+      "title": "人民日报",
+      "url": "https://plink.anyfeeder.com/people-daily",
+      "category": "中国"
+    },
+    {
+      "title": "解放军报",
+      "url": "https://plink.anyfeeder.com/jiefangjunbao",
+      "category": "中国"
+    },
+    {
+      "title": "Defense News",
+      "url": "https://www.defensenews.com/arc/outboundfeeds/rss/?outputType=xml",
+      "category": "军事"
+    },
+    {
+      "title": "Military.com",
+      "url": "https://www.military.com/rss-feeds/content?keyword=headlines&channel=news&type=news",
+      "category": "军事"
+    },
+    {
+      "title": "Task & Purpose",
+      "url": "https://taskandpurpose.com/feed/",
+      "category": "军事"
+    }
+  ]
+}
